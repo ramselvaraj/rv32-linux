@@ -1,0 +1,6 @@
+tools/
+build/
+*.vcd
+*.fst
+sw/payload/payload.elf
+sw/payload/payload.bin

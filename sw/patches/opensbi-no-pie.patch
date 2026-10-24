@@ -1,0 +1,20 @@
+--- a/Makefile	2026-10-24 13:19:29.285763800 -0700
++++ b/Makefile	2026-10-24 13:19:29.288763800 -0700
+@@ -404,7 +404,7 @@
+ CFLAGS		+=	$(RELAX_FLAG)
+ CFLAGS		+=	$(GENFLAGS)
+ CFLAGS		+=	$(platform-cflags-y)
+-CFLAGS		+=	-fPIE -pie
++CFLAGS		+=	-fPIE
+ CFLAGS		+=	$(firmware-cflags-y)
+ 
+ CPPFLAGS	+=	$(GENFLAGS)
+@@ -442,7 +442,7 @@
+ ELFFLAGS	+=	-Wl,--exclude-libs,ALL
+ endif
+ ELFFLAGS	+=	-Wl,--build-id=none
+-ELFFLAGS	+=	-Wl,--no-dynamic-linker -Wl,-pie
++ELFFLAGS	+=	-Wl,--no-dynamic-linker
+ ELFFLAGS	+=	$(platform-ldflags-y)
+ ELFFLAGS	+=	$(firmware-ldflags-y)
+ 
