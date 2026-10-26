@@ -1,3 +1,5 @@
+![rv32-linux](assets/RV32-Linux-Hero.jpeg)
+
 # rv32-linux: a readable Linux-capable RV32IMA core (SystemVerilog)
 
 An in-order, 5-stage **RV32IMA_Zicsr_Zifencei** core with **M/S/U privilege** and an
