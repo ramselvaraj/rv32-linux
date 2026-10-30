@@ -4,8 +4,8 @@
 
 An in-order, 5-stage **RV32IMA_Zicsr_Zifencei** core with **M/S/U privilege** and an
 **Sv32 MMU**, written to be small and readable, targeting a PYNQ-Z2 (Zynq-7020) and
-mainline Linux. Verified in Verilator against the official `riscv-tests` and by booting
-**OpenSBI** into an S-mode payload.
+mainline Linux. Verified in Verilator against the official `riscv-tests`, and **boots
+Linux 6.18 to userspace on a real PYNQ-Z2** at 50 MHz (OpenSBI, Sv32, BusyBox initramfs).
 
 ## Status
 
@@ -17,8 +17,11 @@ mainline Linux. Verified in Verilator against the official `riscv-tests` and by 
 | Sv32 MMU (TLBs + hardware walker), `sfence.vma` | done, all `-v-` (virtual memory) variants pass |
 | OpenSBI (`generic`, rv32) boots an S-mode payload | done: SBI calls, delegated timer irq, paging, page faults |
 | Spike lock-step co-sim | next |
-| FPGA SoC: AXI bridges, serial UART, Vivado bitstream for PYNQ-Z2 (50 MHz, timing met) | done in sim + build, untested on hardware |
-| Buildroot rootfs + Linux to a shell | next |
+| FPGA SoC: AXI bridges, serial UART, Vivado bitstream for PYNQ-Z2 (50 MHz, timing met) | done, runs on the board |
+| OpenSBI + S-mode payload on the PYNQ-Z2 | done, same final PC as simulation |
+| Buildroot (musl, BusyBox initramfs) + Linux 6.18 on the PYNQ-Z2 | done: reaches `/init` and runs scripts (~6 min boot, uncached DDR) |
+| Interactive shell | needs a serial adapter on Pmod JA (the UART pins are untested) |
+| Caches, timer-rate check (a 10 s `sleep` advances uptime ~3.4 s) | open |
 
 `make test` result: **139 / 139** ISA tests (zero and random memory latency) plus the custom
 regressions in `sw/tests` and the OpenSBI boot. Three upstream tests are skipped on purpose:
@@ -34,6 +37,7 @@ triggers).
     docs/        design notes
     rtl/soc/     FPGA SoC: AXI3 bridges, 16550 UART, CLINT, rv_soc top
     fpga/        PYNQ-Z2 Vivado build (see fpga/pynq_z2/README.md)
+    sw/linux/    Buildroot defconfig, kernel fragment, initramfs overlay
 
 ## Quick start
 
@@ -50,7 +54,19 @@ Run something by hand:
 
 Requires Verilator (tested 5.052), a C++ compiler, `dtc`, `curl`, `git`, Python 3.
 
-## PYNQ-Z2 plan
+## Linux on the board
+
+    sw/build_linux_fw.sh     # after the Buildroot build below: kernel + DTB + OpenSBI -> build/fw_linux.bin
+
+    make -C tools/buildroot O=$PWD/build/linux BR2_DEFCONFIG=$PWD/sw/linux/rv32core_defconfig defconfig
+    make -C build/linux      # musl toolchain, kernel with embedded initramfs (needs ~4 GB disk)
+
+Then follow `fpga/pynq_z2/README.md` and pass `--log 420` to `run_on_board.py` to read the kernel
+log out of DDR when no serial adapter is attached. Note: on an NTFS checkout `host-kmod` cannot
+extract (filenames with `:`) and GCC 16 needs `ac_cv_func_posix_spawn_file_actions_addchdir=yes`
+exported for `host-m4`.
+
+## PYNQ-Z2 design
 
 The DDR3 is wired to the ARM PS, not the fabric, so there is no soft DRAM controller:
 

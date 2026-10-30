@@ -5,7 +5,7 @@ Build (needs Vivado and the TUL PYNQ-Z2 board files, `pynq-z2/A.0/board.xml`):
     vivado -mode batch -source fpga/pynq_z2/build.tcl -tclargs <board_repo_dir>
     # -> build/fpga/out/rv32_pynq.{bit,hwh,xsa}
 
-Result at 50 MHz: ~4.0k LUT, 3.2k FF, 0 BRAM, WNS +0.9 ns.
+Result at 50 MHz (whole SoC, post-route): 4.7k LUT, 5.0k FF, 0 BRAM, 4 DSP, WNS +1.65 ns (critical path ~18.4 ns, so roughly 54 MHz as built).
 
 ## Memory map
 
@@ -34,6 +34,14 @@ Result at 50 MHz: ~4.0k LUT, 3.2k FF, 0 BRAM, WNS +0.9 ns.
    releases the core through EMIO GPIO 0 (sysfs 960 on kernel 5.15: chip base 906 + 54).
 3. Open the console on the Pmod JA UART (3.3 V adapter, 115200 8N1).
 
+### Linux
+
+Use `fw_linux.bin` (from `sw/build_linux_fw.sh`) instead of `fw_payload.bin`. With no UART adapter,
+`--log SEC` polls the kernel's `__log_buf` in DDR and prints new text; the offset is
+`System.map` vaddr of `__log_buf` minus `0xC0000000` plus `0x400000` (the kernel load offset), and
+`--logoff` overrides the default. The initramfs script `S99hello` writes userspace progress to
+`/dev/kmsg` so it appears there too. Boot to `/init` takes about 6 minutes.
+
 LEDs: LD0 running, LD1 UART TX, LD2 UART RX, LD3 timer pending.
 
 `--probe` reads a debug window the PL exports through the other EMIO GPIO lines: last retired PC,
@@ -58,5 +66,6 @@ responses, and a 32-cycle trace of the fetch AXI channel. It works without a UAR
 - `BD 41-1348` (async reset) is expected: `rv_soc` synchronizes reset itself.
 - The `PSU-*` negative DQS skew warnings come from the board preset; DDR is already
   initialised by the PYNQ boot, the overlay does not touch it.
-- The Pmod UART pins are untested (no adapter yet); everything else above is verified: OpenSBI
-  and the S-mode payload run to their final loop on the board.
+- The Pmod UART pins are untested (no adapter yet); everything else above is verified: OpenSBI,
+  the S-mode payload and Linux 6.18 to userspace run on the board.
+- Known oddity: a 10 s `sleep` advances `/proc/uptime` by only ~3.4 s; not yet investigated.
