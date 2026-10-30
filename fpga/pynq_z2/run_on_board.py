@@ -94,6 +94,8 @@ def main():
     ap.add_argument("--probe", action="store_true", help="read the PL debug window (pc, fetch addr/data, counters)")
     ap.add_argument("--watch", action="store_true", help="poll the debug flags right after release and print every change")
     ap.add_argument("--check", action="store_true", help="after 3 s, report which RAM words the core changed")
+    ap.add_argument("--log", type=float, metavar="SEC", help="poll the kernel log buffer in DDR for SEC seconds and print new text")
+    ap.add_argument("--logoff", type=lambda x: int(x, 0), default=0x01CB1DA4, help="RAM offset of __log_buf (System.map vaddr - 0xC0000000 + 0x400000 kernel load offset)")
     a = ap.parse_args()
 
     img = open(a.image, "rb").read()
@@ -134,6 +136,17 @@ def main():
             print(f"debug window at ~{t}s:")
             read_debug()
         read_la()
+    if a.log:
+        import re
+        seen, t0 = set(), time.time()
+        while time.time() - t0 < a.log:
+            time.sleep(2)
+            buf = mem[a.logoff:a.logoff + (1 << 17)]
+            for m in re.finditer(rb"[\x20-\x7e]{8,}", buf):
+                if m.start() not in seen:
+                    seen.add(m.start())
+                    print(m.group().decode(), flush=True)
+        read_debug()
     if a.check:
         time.sleep(3)
         cur = mem[:]
