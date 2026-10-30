@@ -1,0 +1,34 @@
+flowchart TB
+  subgraph PL["Zynq PL: rv_soc @ 50 MHz"]
+    direction TB
+    CORE["<b>rv_core</b>: RV32IMA, M/S/U, Sv32 MMU<br/>Fetch + iTLB → Decode → Execute (ALU, mul/div) → Memory + dTLB → Writeback<br/>CSRs and traps, page-table walker"]
+    IB["soc_axi_master<br/>ibus"]
+    DEC["soc_periph<br/>address decode"]
+    CLINT["CLINT<br/>0x0200_0000"]
+    UART["16550 UART<br/>0x1000_0000"]
+    DB["soc_axi_master<br/>dbus"]
+    CORE -->|"instruction fetch"| IB
+    CORE -->|"load / store / page walk"| DEC
+    DEC --> CLINT
+    DEC --> UART
+    DEC -->|"RAM 0x8000_0000"| DB
+    CLINT -.->|"timer / soft irq"| CORE
+  end
+
+  subgraph PS["Zynq PS: hard ARM running PYNQ Linux"]
+    direction LR
+    GPIO["EMIO GPIO<br/>run / reset"]
+    ARM["ARM host<br/>loads bitstream and image,<br/>reads kernel log"]
+    HP0["S_AXI_HP0"]
+    HP1["S_AXI_HP1"]
+    DDR[("DDR3<br/>64 MiB window at 0x1C00_0000")]
+    ARM --> GPIO
+    ARM -->|"/dev/mem"| DDR
+    HP0 --> DDR
+    HP1 --> DDR
+  end
+
+  IB --> HP0
+  DB --> HP1
+  GPIO -.->|"releases core reset"| CORE
+  UART --> PMOD(["Pmod JA1 / JA2<br/>serial pins"])

@@ -1,0 +1,8 @@
+flowchart TB
+  U["BusyBox initramfs<br/>U-mode: /init, S99hello"]
+  S["Linux 6.18 rv32<br/>S-mode: Sv32 paging, 8250 UART, SBI timer"]
+  M["OpenSBI generic<br/>M-mode: timer, IPI, console, misaligned-access emulation"]
+  H["RV32IMA core<br/>CLINT + UART + DDR over AXI"]
+  U -->|"syscalls (ecall)"| S
+  S -->|"SBI calls (ecall)"| M
+  M --> H

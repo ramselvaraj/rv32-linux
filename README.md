@@ -28,6 +28,19 @@ regressions in `sw/tests` and the OpenSBI boot. Three upstream tests are skipped
 `ma_data` (hardware misaligned access; OpenSBI emulates it instead) and `breakpoint` (debug
 triggers).
 
+## Architecture
+
+![SoC architecture](docs/diagrams/architecture.png)
+
+The ARM side of the Zynq is the host: it loads the bitstream, writes the firmware into reserved
+DDR and releases the core's reset. The core fetches and loads through its own AXI masters into
+that same DDR, so there is no disk, network or soft DRAM controller.
+
+![Software stack](docs/diagrams/software-stack.png)
+
+Diagram sources are Mermaid (`docs/diagrams/*.mmd`); regenerate with
+`npx @mermaid-js/mermaid-cli -i docs/diagrams/architecture.mmd -o docs/diagrams/architecture.png -b white -s 2`.
+
 ## Layout
 
     rtl/core/    rv_core (pipeline), rv_fetch, rv_decode, rv_csr, rv_tlb, rv_ptw,
