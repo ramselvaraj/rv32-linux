@@ -1,0 +1,10 @@
+#!/bin/sh
+# Mirror userspace progress into the kernel log: with no serial adapter the ARM host reads it from DDR.
+[ "$1" = start ] || exit 0
+k() { echo "rv32-userspace: $*" > /dev/kmsg; }
+k "init script running as pid $$"
+k "$(uname -a)"
+k "$(head -n 4 /proc/cpuinfo | tr '\n' ' ')"
+k "$(free | head -n 2 | tail -n 1)"
+k "rootfs: $(ls / | tr '\n' ' ')"
+( n=0; while :; do sleep 10; n=$((n + 1)); k "alive $n, uptime $(cut -d' ' -f1 /proc/uptime)s"; done ) &
