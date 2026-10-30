@@ -38,7 +38,7 @@ module rv_dmux (
   assign s_req_we    = m_req_valid ? m_req_we    : 1'b0;
   assign s_req_addr  = m_req_valid ? m_req_addr  : p_req_addr;
   assign s_req_wdata = m_req_wdata;
-  assign s_req_wstrb = m_req_valid ? m_req_wstrb : 4'b0000;
+  assign s_req_wstrb = m_req_valid ? m_req_wstrb : 4'b1111;  // reads: byte lanes wanted
 
   assign m_req_ready = s_req_ready && m_req_valid;
   assign p_req_ready = s_req_ready && p_req_valid && !m_req_valid;

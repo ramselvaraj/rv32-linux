@@ -17,7 +17,7 @@ mainline Linux. Verified in Verilator against the official `riscv-tests` and by 
 | Sv32 MMU (TLBs + hardware walker), `sfence.vma` | done, all `-v-` (virtual memory) variants pass |
 | OpenSBI (`generic`, rv32) boots an S-mode payload | done: SBI calls, delegated timer irq, paging, page faults |
 | Spike lock-step co-sim | next |
-| Vivado block design on PYNQ-Z2 (core + PS7 DDR port) | next |
+| FPGA SoC: AXI bridges, serial UART, Vivado bitstream for PYNQ-Z2 (50 MHz, timing met) | done in sim + build, untested on hardware |
 | Buildroot rootfs + Linux to a shell | next |
 
 `make test` result: **139 / 139** ISA tests (zero and random memory latency) plus the custom
@@ -32,7 +32,8 @@ triggers).
     tb/          Verilator SoC: dual-port RAM, CLINT, 16550-style UART, testbench
     sw/          payload (S-mode test), DTS, test runners, OpenSBI build, patches
     docs/        design notes
-    fpga/        PYNQ-Z2 project (not started)
+    rtl/soc/     FPGA SoC: AXI3 bridges, 16550 UART, CLINT, rv_soc top
+    fpga/        PYNQ-Z2 Vivado build (see fpga/pynq_z2/README.md)
 
 ## Quick start
 
@@ -41,6 +42,7 @@ triggers).
     sw/build_opensbi.sh      # payload + DTB + OpenSBI -> build/fw_payload.hex
     make test-custom         # regressions + OpenSBI boot
     make test-lat            # everything again with random extra memory latency
+    make test-soc            # OpenSBI boot on the FPGA SoC (AXI + serial UART) in Verilator
 
 Run something by hand:
 

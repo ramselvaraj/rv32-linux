@@ -4,3 +4,4 @@ build/
 *.fst
 sw/payload/payload.elf
 sw/payload/payload.bin
+__pycache__/

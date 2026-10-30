@@ -44,7 +44,9 @@ module rv_fetch
   output logic [31:0] out_insn,
   output logic        out_exc,
   output logic [4:0]  out_cause,
-  input  logic        out_ready
+  input  logic        out_ready,
+
+  output logic [7:0]  dbg
 );
 
   localparam int DEPTH = 4;
@@ -102,6 +104,8 @@ module rv_fetch
 
   logic push;
   assign push = push_fault || push_rsp;
+  assign dbg  = {1'b0, inflight_q, discard_q, halt_q, ptw_wait_q, fault_pend_q, cnt_q[1:0]};
+
 
   always_ff @(posedge clk) begin
     if (rst) begin

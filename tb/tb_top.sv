@@ -43,7 +43,7 @@ module tb_top;
     .db_req_ready, .db_rsp_valid, .db_rsp_data, .db_rsp_err,
     .irq_mtip(mtip), .irq_msip(msip), .irq_meip(1'b0), .irq_seip(1'b0), .time_i(mtime),
     .trace_valid(tr_valid), .trace_pc(tr_pc), .trace_insn(tr_insn),
-    .trace_rd(tr_rd), .trace_rd_data(tr_rd_data)
+    .trace_rd(tr_rd), .trace_rd_data(tr_rd_data), .dbg(), .dbg_mcause(), .dbg_mepc(), .dbg_mtval()
   );
 
   sim_periph #(.RAM_BASE(RAM_BASE), .RAM_WORDS(RAM_WORDS)) u_periph (

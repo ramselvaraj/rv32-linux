@@ -4,7 +4,7 @@ CORE := rtl/core/rv_pkg.sv rtl/core/rv_alu.sv rtl/core/rv_regfile.sv rtl/core/rv
 TB   := tb/sim_ram.sv tb/sim_periph.sv tb/tb_top.sv
 VFLAGS := -Wno-UNUSEDPARAM -Wno-UNUSEDSIGNAL
 
-.PHONY: lint sim sim-lat test test-lat test-isa test-isa-lat test-custom test-custom-lat opensbi clean
+.PHONY: sim-soc test-soc lint sim sim-lat test test-lat test-isa test-isa-lat test-custom test-custom-lat opensbi clean
 
 lint:
 	verilator --lint-only -Wall $(VFLAGS) --top-module rv_core $(CORE)
@@ -44,3 +44,17 @@ test-custom-lat: sim-lat
 
 test: test-isa test-custom
 test-lat: test-isa-lat test-custom-lat
+
+# ---- FPGA SoC (core + serial UART + AXI bridges) against an AXI memory model
+SOC := rtl/soc/soc_uart.sv rtl/soc/soc_periph.sv rtl/soc/soc_axi_master.sv rtl/soc/rv_soc.sv
+TBSOC := tb/axi_ram.sv tb/tb_soc.sv
+
+build/sim_soc/Vtb_soc: $(CORE) $(SOC) $(TBSOC)
+	@mkdir -p $(@D)
+	verilator --binary --timing -Wall $(VFLAGS) -Wno-fatal --top-module tb_soc \
+	  -O3 --Mdir build/sim_soc -o Vtb_soc $(CORE) $(SOC) $(TBSOC)
+
+sim-soc: build/sim_soc/Vtb_soc
+
+test-soc: sim-soc
+	sw/run_soc.sh build/sim_soc/Vtb_soc

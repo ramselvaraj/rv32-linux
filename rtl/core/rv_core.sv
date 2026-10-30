@@ -51,7 +51,12 @@ module rv_core
   output logic [31:0] trace_pc,
   output logic [31:0] trace_insn,
   output logic [4:0]  trace_rd,
-  output logic [31:0] trace_rd_data
+  output logic [31:0] trace_rd_data,
+
+  output logic [31:0] dbg,
+  output logic [31:0] dbg_mcause,
+  output logic [31:0] dbg_mepc,
+  output logic [31:0] dbg_mtval
 );
 
   typedef enum logic [2:0] { M_IDLE, M_PTW, M_RSP, M_AMO_W, M_AMO_WRSP } mstate_e;
@@ -123,7 +128,11 @@ module rv_core
   logic [19:0] fill_vpn, fill_ppn;
   logic [7:0]  fill_flags;
 
+  logic [7:0] f_dbg;
+  assign dbg_mepc = mepc;
   assign f_ready = !d_valid || dx_go;
+  assign dbg = {f_dbg, 8'd0, f_valid, f_ready, d_valid, x_valid, m_valid, w_valid, x_free, x_haz,
+                x_done, xm_go, m_done, m_free, redir_v, m_kill, md_done, dx_go};
 
   rv_fetch #(.RESET_PC(RESET_PC), .TLB_ENTRIES(ITLB_ENTRIES)) u_fetch (
     .clk, .rst,
@@ -136,7 +145,7 @@ module rv_core
     .ptw_done(ptw_done && !ptw_done_d), .ptw_fault, .ptw_afault,
     .fill_valid(fill_valid && !ptw_done_d), .fill_vpn, .fill_ppn, .fill_flags, .fill_super,
     .out_valid(f_valid), .out_pc(f_pc), .out_insn(f_insn), .out_exc(f_exc),
-    .out_cause(f_cause), .out_ready(f_ready)
+    .out_cause(f_cause), .out_ready(f_ready), .dbg(f_dbg)
   );
 
   // =====================================================================
@@ -549,7 +558,7 @@ module rv_core
     .trap_commit(m_trap), .trap_irq(m_trap_irq), .trap_cause(m_trap_cause),
     .trap_pc(m_pc), .trap_val(m_trap_tval), .trap_target,
     .mret_commit(xret_m && m_done), .sret_commit(xret_s && m_done),
-    .mepc_o(mepc), .sepc_o(sepc),
+    .mepc_o(mepc), .dbg_mcause_o(dbg_mcause), .dbg_mtval_o(dbg_mtval), .sepc_o(sepc),
     .retire(m_retire),
     .irq_mtip, .irq_msip, .irq_meip, .irq_seip, .time_i,
     .priv_o(priv), .satp_mode_o(satp_mode), .satp_ppn_o(satp_ppn),
@@ -571,7 +580,7 @@ module rv_core
   rv_dmux u_dmux (
     .clk, .rst,
     .m_req_valid(l_req_valid), .m_req_we(l_req_we), .m_req_addr(l_req_addr & 32'hFFFF_FFFC),
-    .m_req_wdata(l_req_wdata), .m_req_wstrb(l_req_we ? l_req_wstrb : 4'b0000),
+    .m_req_wdata(l_req_wdata), .m_req_wstrb(l_req_wstrb),
     .m_req_ready(l_req_ready), .m_rsp_valid(l_rsp_valid),
     .p_req_valid, .p_req_addr, .p_req_ready, .p_rsp_valid,
     .rsp_data(bus_rsp_data), .rsp_err(bus_rsp_err),

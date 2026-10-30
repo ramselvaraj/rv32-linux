@@ -25,7 +25,8 @@ instruction in M starts. `mret`/`sret`/`fence.i`/`sfence.vma`/`satp` writes redi
 
 `req_valid` may be withdrawn before `req_ready` (fetch redirect), so an AXI bridge must latch
 a request before presenting it. The data port is shared by the LSU and the page-table walker
-(`rv_dmux`, LSU has priority). Stores wait for their response before retiring, so `fence.i`
+(`rv_dmux`, LSU has priority). `wstrb` is the byte-lane mask for reads as well as writes, so
+peripherals with read side effects (UART RX FIFO pop) can tell which register was read. Stores wait for their response before retiring, so `fence.i`
 only needs to flush the pipeline.
 
 ## MMU

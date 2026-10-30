@@ -24,6 +24,8 @@ module rv_csr
   input  logic        mret_commit,
   input  logic        sret_commit,
   output logic [31:0] mepc_o,
+  output logic [31:0] dbg_mcause_o,
+  output logic [31:0] dbg_mtval_o,
   output logic [31:0] sepc_o,
 
   input  logic        retire,
@@ -80,6 +82,8 @@ module rv_csr
   assign tw_o        = tw_q;
   assign tsr_o       = tsr_q;
   assign mepc_o      = mepc_q;
+  assign dbg_mcause_o = mcause_q;
+  assign dbg_mtval_o  = mtval_q;
   assign sepc_o      = sepc_q;
 
   // ---- composed registers
