@@ -1,11 +1,14 @@
 ![rv32-linux](assets/RV32-Linux-Hero.jpeg)
 
-# rv32-linux: a readable Linux-capable RV32IMA core (SystemVerilog)
+# rv32-linux
 
-An in-order, 5-stage **RV32IMA_Zicsr_Zifencei** core with **M/S/U privilege** and an
-**Sv32 MMU**, written to be small and readable, targeting a PYNQ-Z2 (Zynq-7020) and
-mainline Linux. Verified in Verilator against the official `riscv-tests`, and **boots
-Linux 6.18 to userspace on a real PYNQ-Z2** at 50 MHz (OpenSBI, Sv32, BusyBox initramfs).
+A small, readable **RV32IMA** RISC-V core in SystemVerilog that boots **Linux 6.18** to userspace
+on a real **PYNQ-Z2** (Zynq-7020) FPGA board.
+
+- 5-stage in-order pipeline, `RV32IMA_Zicsr_Zifencei`, M/S/U privilege, **Sv32 MMU** (TLBs and a hardware page-table walker)
+- ~1,800 lines of RTL for the core; 4.7k LUT, 5.0k FF, 0 BRAM, 4 DSP for the whole SoC at 50 MHz
+- Verified in Verilator against the official [`riscv-tests`](https://github.com/riscv-software-src/riscv-tests): **139 / 139** passing, with and without random memory latency
+- Runs OpenSBI, then a mainline Linux kernel with a Buildroot (musl, BusyBox) initramfs
 
 ## Status
 
@@ -16,17 +19,16 @@ Linux 6.18 to userspace on a real PYNQ-Z2** at 50 MHz (OpenSBI, Sv32, BusyBox in
 | Zicsr, traps, M/S/U, delegation, timer/soft interrupts | done, `rv32mi`, `rv32si` pass |
 | Sv32 MMU (TLBs + hardware walker), `sfence.vma` | done, all `-v-` (virtual memory) variants pass |
 | OpenSBI (`generic`, rv32) boots an S-mode payload | done: SBI calls, delegated timer irq, paging, page faults |
-| Spike lock-step co-sim | next |
-| FPGA SoC: AXI bridges, serial UART, Vivado bitstream for PYNQ-Z2 (50 MHz, timing met) | done, runs on the board |
+| FPGA SoC: AXI bridges, UART, Vivado bitstream for PYNQ-Z2 | done, 50 MHz, timing met, runs on the board |
 | OpenSBI + S-mode payload on the PYNQ-Z2 | done, same final PC as simulation |
 | Buildroot (musl, BusyBox initramfs) + Linux 6.18 on the PYNQ-Z2 | done: reaches `/init` and runs scripts (~6 min boot, uncached DDR) |
-| Interactive shell | needs a serial adapter on Pmod JA (the UART pins are untested) |
-| Caches, timer-rate check (a 10 s `sleep` advances uptime ~3.4 s) | open |
+| Interactive shell | pending: needs a serial adapter on Pmod JA (UART pins untested) |
+| Spike lock-step co-simulation | planned |
+| Caches; timer-rate discrepancy (a 10 s `sleep` advances uptime ~3.4 s) | open |
 
-`make test` result: **139 / 139** ISA tests (zero and random memory latency) plus the custom
-regressions in `sw/tests` and the OpenSBI boot. Three upstream tests are skipped on purpose:
-`ma_data` (hardware misaligned access; OpenSBI emulates it instead) and `breakpoint` (debug
-triggers).
+`make test` runs 139 ISA tests plus the custom regressions in `sw/tests` and the OpenSBI boot.
+Three upstream tests are skipped on purpose: `ma_data` (hardware misaligned access; OpenSBI
+emulates it instead) and `breakpoint` (debug triggers).
 
 ## Architecture
 
@@ -38,21 +40,25 @@ that same DDR, so there is no disk, network or soft DRAM controller.
 
 ![Software stack](docs/diagrams/software-stack.png)
 
-Diagram sources are Mermaid (`docs/diagrams/*.mmd`); regenerate with
+Pipeline, bus protocol and MMU details are in [`docs/DESIGN.md`](docs/DESIGN.md). Diagram sources
+are Mermaid (`docs/diagrams/*.mmd`); regenerate with
 `npx @mermaid-js/mermaid-cli -i docs/diagrams/architecture.mmd -o docs/diagrams/architecture.png -b white -s 2`.
 
-## Layout
+## Repository layout
 
-    rtl/core/    rv_core (pipeline), rv_fetch, rv_decode, rv_csr, rv_tlb, rv_ptw,
-                 rv_muldiv, rv_dmux, rv_alu, rv_regfile, rv_pkg
-    tb/          Verilator SoC: dual-port RAM, CLINT, 16550-style UART, testbench
-    sw/          payload (S-mode test), DTS, test runners, OpenSBI build, patches
-    docs/        design notes
-    rtl/soc/     FPGA SoC: AXI3 bridges, 16550 UART, CLINT, rv_soc top
-    fpga/        PYNQ-Z2 Vivado build (see fpga/pynq_z2/README.md)
-    sw/linux/    Buildroot defconfig, kernel fragment, initramfs overlay
+| Path | Contents |
+|---|---|
+| `rtl/core/` | The core: `rv_core` (pipeline), `rv_fetch`, `rv_decode`, `rv_csr`, `rv_tlb`, `rv_ptw`, `rv_muldiv`, `rv_dmux`, `rv_alu`, `rv_regfile`, `rv_pkg` |
+| `rtl/soc/` | FPGA SoC: AXI3 bridges, 16550 UART, CLINT, `rv_soc` top |
+| `tb/` | Verilator testbenches: dual-port RAM, AXI RAM, CLINT, UART |
+| `sw/` | Test runners, S-mode payload, device trees, OpenSBI build and patch |
+| `sw/linux/` | Buildroot defconfig, kernel fragment, initramfs overlay |
+| `fpga/pynq_z2/` | Vivado build and on-board runner ([bring-up guide](fpga/pynq_z2/README.md)) |
+| `docs/` | Design notes and diagrams |
 
-## Quick start
+## Quick start (simulation)
+
+Requires Verilator (tested with 5.052), a C++ compiler, `dtc`, `curl`, `git` and Python 3.
 
     sw/setup_tools.sh        # RISC-V GCC, riscv-tests, OpenSBI into tools/ (gitignored)
     make test                # lint-clean build + riscv-tests ISA suite
@@ -61,31 +67,28 @@ Diagram sources are Mermaid (`docs/diagrams/*.mmd`); regenerate with
     make test-lat            # everything again with random extra memory latency
     make test-soc            # OpenSBI boot on the FPGA SoC (AXI + serial UART) in Verilator
 
-Run something by hand:
+To run something by hand:
 
     build/sim/Vtb_top +hex=build/fw_payload.hex +halt=<pc> +maxcycles=60000000 [+trace]
 
-Requires Verilator (tested 5.052), a C++ compiler, `dtc`, `curl`, `git`, Python 3.
-
 ## Linux on the board
 
-    sw/build_linux_fw.sh     # after the Buildroot build below: kernel + DTB + OpenSBI -> build/fw_linux.bin
+    sw/build_linux.sh        # Buildroot: musl toolchain + kernel with embedded initramfs (~4 GB disk)
+    sw/build_linux_fw.sh     # kernel + DTB + OpenSBI -> build/fw_linux.bin
 
-    make -C tools/buildroot O=$PWD/build/linux BR2_DEFCONFIG=$PWD/sw/linux/rv32core_defconfig defconfig
-    make -C build/linux      # musl toolchain, kernel with embedded initramfs (needs ~4 GB disk)
+Then follow [`fpga/pynq_z2/README.md`](fpga/pynq_z2/README.md) and pass `--log 420` to
+`run_on_board.py` to read the kernel log out of DDR when no serial adapter is attached.
 
-Then follow `fpga/pynq_z2/README.md` and pass `--log 420` to `run_on_board.py` to read the kernel
-log out of DDR when no serial adapter is attached. Note: on an NTFS checkout `host-kmod` cannot
-extract (filenames with `:`) and GCC 16 needs `ac_cv_func_posix_spawn_file_actions_addchdir=yes`
-exported for `host-m4`.
+Build notes: on an NTFS checkout Buildroot's `host-kmod` cannot extract (filenames containing
+`:`), and GCC 16 needs `ac_cv_func_posix_spawn_file_actions_addchdir=yes` exported for `host-m4`.
 
 ## PYNQ-Z2 design
 
 The DDR3 is wired to the ARM PS, not the fabric, so there is no soft DRAM controller:
 
-    RV32 core (PL) --AXI4--> Zynq PS7 S_AXI_HP0 --> DDR3
+    RV32 core (PL) --AXI--> Zynq PS7 S_AXI_HP0/HP1 --> DDR3
     ARM (PYNQ Linux) loads OpenSBI + kernel + initramfs into a reserved DDR window,
-    then releases the RV32 core's reset through an AXI-GPIO register.
+    then releases the RV32 core's reset through an EMIO GPIO line.
 
-Console: a UART in the fabric on Pmod/Arduino pins, or a shared-memory ring read by the ARM.
+Console: a 16550 UART in the fabric on Pmod JA pins, or the kernel log read out of DDR by the ARM.
 Both core buses use a small req/rsp protocol (see `docs/DESIGN.md`) that bridges to AXI.

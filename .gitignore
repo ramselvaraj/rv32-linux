@@ -5,3 +5,8 @@ build/
 sw/payload/payload.elf
 sw/payload/payload.bin
 __pycache__/
+.Xil/
+*.jou
+*.log
+*.pyc
+.DS_Store
