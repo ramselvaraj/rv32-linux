@@ -22,9 +22,6 @@ on a real **PYNQ-Z2** (Zynq-7020) FPGA board.
 | FPGA SoC: AXI bridges, UART, Vivado bitstream for PYNQ-Z2 | done, 50 MHz, timing met, runs on the board |
 | OpenSBI + S-mode payload on the PYNQ-Z2 | done, same final PC as simulation |
 | Buildroot (musl, BusyBox initramfs) + Linux 6.18 on the PYNQ-Z2 | done: reaches `/init` and runs scripts (~6 min boot, uncached DDR) |
-| Interactive shell | pending: needs a serial adapter on Pmod JA (UART pins untested) |
-| Spike lock-step co-simulation | planned |
-| Caches; timer-rate discrepancy (a 10 s `sleep` advances uptime ~3.4 s) | open |
 
 `make test` runs 139 ISA tests plus the custom regressions in `sw/tests` and the OpenSBI boot.
 Three upstream tests are skipped on purpose: `ma_data` (hardware misaligned access; OpenSBI
@@ -92,3 +89,7 @@ The DDR3 is wired to the ARM PS, not the fabric, so there is no soft DRAM contro
 
 Console: a 16550 UART in the fabric on Pmod JA pins, or the kernel log read out of DDR by the ARM.
 Both core buses use a small req/rsp protocol (see `docs/DESIGN.md`) that bridges to AXI.
+
+## License and credits
+
+MIT, see [LICENSE](LICENSE). Hero image: Starship launch photo, courtesy of SpaceX.
