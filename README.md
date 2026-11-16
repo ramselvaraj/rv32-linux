@@ -10,6 +10,12 @@ on a real **PYNQ-Z2** (Zynq-7020) FPGA board.
 - Verified in Verilator against the official [`riscv-tests`](https://github.com/riscv-software-src/riscv-tests): **139 / 139** passing, with and without random memory latency
 - Runs OpenSBI, then a mainline Linux kernel with a Buildroot (musl, BusyBox) initramfs
 
+## Demo
+
+[![Watch the 42 s demo](assets/demo-poster.png)](assets/rv32-linux-demo.mp4)
+
+*Click to watch (42 s): the board booting Linux and the resource footprint.*
+
 ## Status
 
 | Milestone | State |
