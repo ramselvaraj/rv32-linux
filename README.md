@@ -1,4 +1,6 @@
-![rv32-linux](assets/RV32-Linux-Hero.jpeg)
+[![rv32-linux: watch the 42 s demo](assets/demo-poster.png)](assets/rv32-linux-demo.mp4)
+
+*Click to watch the 42 s demo.*
 
 # rv32-linux
 
@@ -9,12 +11,6 @@ on a real **PYNQ-Z2** (Zynq-7020) FPGA board.
 - ~1,800 lines of RTL for the core; 4.7k LUT, 5.0k FF, 0 BRAM, 4 DSP for the whole SoC at 50 MHz
 - Verified in Verilator against the official [`riscv-tests`](https://github.com/riscv-software-src/riscv-tests): **139 / 139** passing, with and without random memory latency
 - Runs OpenSBI, then a mainline Linux kernel with a Buildroot (musl, BusyBox) initramfs
-
-## Demo
-
-[![Watch the 42 s demo](assets/demo-poster.png)](assets/rv32-linux-demo.mp4)
-
-*Click to watch (42 s): the board booting Linux and the resource footprint.*
 
 ## Status
 
@@ -98,4 +94,4 @@ Both core buses use a small req/rsp protocol (see `docs/DESIGN.md`) that bridges
 
 ## License and credits
 
-MIT, see [LICENSE](LICENSE). Hero image: Starship launch photo, courtesy of SpaceX.
+MIT, see [LICENSE](LICENSE). Demo video includes a clip courtesy of Paramount Pictures.
