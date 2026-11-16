@@ -1,6 +1,6 @@
-[![rv32-linux: watch the 42 s demo](assets/demo-poster.png)](assets/rv32-linux-demo.mp4)
+![rv32-linux demo](assets/rv32-linux-demo.gif)
 
-*Click to watch the 42 s demo.*
+*[Full-quality video (mp4)](assets/rv32-linux-demo.mp4)*
 
 # rv32-linux
 
