@@ -8,4 +8,7 @@ SECTIONS {
   . = ALIGN(0x1000);
   .data : { *(.data) }
   .bss : { *(.bss) }
+  .ptroot 0x80100000 : { *(.ptroot) }
+  .ptl0   0x80101000 : { *(.ptl0) }
+  .pgdata 0x80110000 : { *(.pgdata) }
 }

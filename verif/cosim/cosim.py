@@ -9,7 +9,7 @@ counters (cycle/time/instret/hpm) are compared for PC/insn only, since their
 values legitimately differ between a cycle-accurate core and an ISS.
 Exit 0 = traces identical over their common length.
 """
-import argparse, os, re, subprocess, sys, tempfile
+import argparse, os, re, resource, subprocess, sys, tempfile
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 NM = f"{ROOT}/tools/gcc/bin/riscv-none-elf-nm"
@@ -17,6 +17,7 @@ OBJCOPY = f"{ROOT}/tools/gcc/bin/riscv-none-elf-objcopy"
 SPIKE = os.environ.get("SPIKE", os.path.expanduser("~/builds/spike-cl/bin/spike"))
 ISA = "rv32ima_zicsr_zifencei_zicntr"
 RAM_BASE = 0x80000000
+SPIKE_LOG_LIMIT = 48 << 20   # bytes: a runaway program must not fill the disk (RLIMIT_FSIZE)
 
 SP_RE = re.compile(r"core\s+0:\s+\d\s+0x([0-9a-f]+)\s+\(0x([0-9a-f]+)\)(.*)")
 SP_MEM = re.compile(r"\s+mem\s+0x([0-9a-f]+)")
@@ -37,13 +38,20 @@ STATUS_MASK = ~0x8001E600 & 0xFFFFFFFF
 def is_id_read(insn):
     return insn & 0x7f == 0x73 and (insn >> 12) & 7 != 0 and (insn >> 20) in (0xF11, 0xF12, 0xF13)
 
+def is_tval_read(insn):
+    return insn & 0x7f == 0x73 and (insn >> 12) & 7 != 0 and (insn >> 20) in (0x343, 0x143)
+
 def is_status_read(insn):
     return insn & 0x7f == 0x73 and (insn >> 12) & 7 != 0 and (insn >> 20) in (0x300, 0x100)
 
 def spike_trace(elf, path, tohost):
-    subprocess.run([SPIKE, f"--isa={ISA}", f"-m0x80000000:0x4000000", "--log-commits",
-                    f"--log={path}", elf], check=False, timeout=300,
-                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    try:
+        subprocess.run([SPIKE, f"--isa={ISA}", f"-m0x80000000:0x4000000", "--log-commits",
+                        f"--log={path}", elf], check=False, timeout=30,
+                       preexec_fn=lambda: resource.setrlimit(resource.RLIMIT_FSIZE, (SPIKE_LOG_LIMIT, SPIKE_LOG_LIMIT)),
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except subprocess.TimeoutExpired:
+        pass                                  # keep the partial log; the DUT/Spike comparison will flag it
     out = []
     for line in open(path):
         m = SP_RE.match(line)
@@ -89,6 +97,9 @@ def compare(dut, spk):
         # surface in a plain load; tolerate differences confined to exactly those two fields
         elif (dv ^ sv) & 0xFFFFFFFF and ((dv ^ sv) & ~0x80006000) == 0 and not is_counter_read(d[1]): sv = dv
         if is_id_read(d[1]): sv = dv
+        # illegal-instruction tval for a word whose low 2 bits != 11: Spike reports the 16-bit parcel, this
+        # core (no C extension) the full 32-bit word; both are allowed by the privileged spec
+        if is_tval_read(d[1]) and (dv & 3) != 3 and sv == (dv & 0xFFFF): sv = dv
         if d[2] != s[2] or (d[2] and dv != sv and not is_counter_read(d[1])):
             return i, (f"reg write @pc {d[0]:08x} insn {d[1]:08x}: dut x{d[2]}={d[3]:08x} "
                        f"vs spike x{s[2]}={s[3]:08x}")
