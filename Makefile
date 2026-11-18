@@ -58,3 +58,18 @@ sim-soc: build/sim_soc/Vtb_soc
 
 test-soc: sim-soc
 	sw/run_soc.sh build/sim_soc/Vtb_soc
+
+# ---- Verification: lock-step co-simulation against Spike (see verif/README.md)
+.PHONY: cosim cosim-lat cosim-random mutate
+cosim: sim
+	verif/cosim/run_cosim.sh build/sim/Vtb_top
+cosim-lat: sim-lat
+	verif/cosim/run_cosim.sh build/sim_lat/Vtb_top
+# SEEDS programs per profile, N instructions each
+SEEDS ?= 100
+N ?= 800
+cosim-random: sim sim-lat
+	for p in mix hazard mem muldiv amo; do verif/cosim/run_random.sh build/sim/Vtb_top 1000 $(SEEDS) $(N) $$p || exit 1; done
+	for p in mix mem amo; do verif/cosim/run_random.sh build/sim_lat/Vtb_top 3000 $(SEEDS) $(N) $$p || exit 1; done
+mutate:
+	python3 verif/mutate/mutate.py
