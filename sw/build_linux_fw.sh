@@ -4,7 +4,8 @@ set -euo pipefail
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 export PATH=$ROOT/tools/gcc/bin:$PATH
 B=$ROOT/build
-dtc -I dts -O dtb -o "$B/board.dtb" "$ROOT/sw/dts/board.dts"
+dtc -I dts -O dtb -o "$B/board.dtb" "$ROOT/sw/dts/${DTS:-board.dts}"
+[ "${DTS:-}" = board_ddrcon.dts ] && "$ROOT/sw/opensbi-ddrcon/install.sh"
 rm -rf "$B/opensbi_linux"
 make -C "$ROOT/tools/opensbi" -j"$(nproc)" PLATFORM=generic PLATFORM_RISCV_XLEN=32 \
   PLATFORM_RISCV_ISA=rv32ima_zicsr_zifencei PLATFORM_RISCV_ABI=ilp32 \

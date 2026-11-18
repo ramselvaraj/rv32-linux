@@ -8,3 +8,4 @@ k "$(head -n 4 /proc/cpuinfo | tr '\n' ' ')"
 k "$(free | head -n 2 | tail -n 1)"
 k "rootfs: $(ls / | tr '\n' ' ')"
 ( n=0; while :; do sleep 10; n=$((n + 1)); k "alive $n, uptime $(cut -d' ' -f1 /proc/uptime)s"; done ) &
+
