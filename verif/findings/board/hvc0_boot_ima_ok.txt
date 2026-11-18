@@ -1,0 +1,182 @@
+
+OpenSBI v1.9
+   ____                    _____ ____ _____
+  / __ \                  / ____|  _ \_   _|
+ | |  | |_ __   ___ _ __ | (___ | |_) || |
+ | |  | | '_ \ / _ \ '_ \ \___ \|  _ < | |
+ | |__| | |_) |  __/ | | |____) | |_) || |_
+  \____/| .__/ \___|_| |_|_____/|____/_____|
+        | |
+        |_|
+
+Platform Name               : rv32-linux-pynq
+Platform Features           : medeleg
+Platform HART Count         : 1
+Platform HART Protection    : pmp
+Platform IPI Device         : aclint-mswi
+Platform Timer Device       : aclint-mtimer @ 10000000Hz
+Platform Console Device     : ddrcon
+Platform HSM Device         : ---
+Platform PMU Device         : ---
+Platform Reboot Device      : ---
+Platform Shutdown Device    : ---
+Platform Suspend Device     : ---
+Platform CPPC Device        : ---
+Firmware Base               : 0x80000000
+Firmware Size               : 573 KB
+Firmware RW Offset          : 0x80000
+Firmware RW Size            : 61 KB
+Firmware Heap Offset        : 0x86000
+Firmware Heap Size          : 37 KB (total), 0 KB (reserved), 10 KB (used), 26 KB (free)
+Firmware Scratch Size       : 4096 B (total), 300 B (used), 3796 B (free)
+Runtime SBI Version         : 3.0
+Standard SBI Extensions     : time,rfnc,ipi,base,hsm,pmu,dbcn,fwft,legacy,sse
+Experimental SBI Extensions : none
+
+Domain0 Name                : root
+Domain0 Init Order          : 0xffffffff
+Domain0 Boot HART           : 0
+Domain0 HARTs               : 0x0*
+Domain0 Region00            : 0x80080000-0x8008ffff M: (F,R,W) S/U: ()
+Domain0 Region01            : 0x80000000-0x8007ffff M: (F,R,X) S/U: ()
+Domain0 Region02            : 0x02000000-0x0200ffff M: (I,R,W) S/U: ()
+Domain0 Region03            : 0x00000000-0xffffffff M: () S/U: (R,W,X)
+Domain0 Next Address        : 0x80400000
+Domain0 Next Arg1           : 0x82200000
+Domain0 Next Mode           : S-mode
+Domain0 SysReset            : yes
+Domain0 SysSuspend          : yes
+
+Boot HART ID                : 0
+Boot HART Domain            : root
+Boot HART Priv Version      : v1.11
+Boot HART Base ISA          : rv32ima
+Boot HART ISA Extensions    : zicntr
+Boot HART PMP Count         : 16
+Boot HART PMP Granularity   : 2 bits
+Boot HART PMP Address Bits  : 32
+Boot HART MHPM Info         : 0 (0x00000000)
+Boot HART Debug Triggers    : 0 triggers
+Boot HART MIDELEG           : 0x00000222
+Boot HART MEDELEG           : 0x0000b109
+[    0.000000] Linux version 6.18.7 (ramselvaraj@px13-linux) (riscv32-buildroot-linux-musl-gcc.br_real (Buildroot -g00ae45c-dirty) 15.3.0, GNU ld (GNU Binutils) 2.45.1) #2 Wed Nov 18 09:45:05 MST 2026
+[    0.000000] OF: fdt: Ignoring memory range 0x80000000 - 0x80400000
+[    0.000000] Machine model: rv32-linux-pynq
+[    0.000000] SBI specification v3.0 detected
+[    0.000000] SBI implementation ID=0x1 Version=0x10009
+[    0.000000] SBI TIME extension detected
+[    0.000000] SBI IPI extension detected
+[    0.000000] SBI RFENCE extension detected
+[    0.000000] SBI DBCN extension detected
+[    0.000000] SBI FWFT extension detected
+[    0.000000] earlycon: sbi0 at I/O port 0x0 (options '')
+[    0.000000] printk: legacy bootconsole [sbi0] enabled
+[    0.000000] OF: reserved mem: 0x80000000..0x8007ffff (512 KiB) nomap non-reusable mmode_resv1@80000000
+[    0.000000] OF: reserved mem: 0x80080000..0x8008ffff (64 KiB) nomap non-reusable mmode_resv0@80080000
+[    0.000000] OF: reserved mem: 0x803f0000..0x803f0fff (4 KiB) nomap non-reusable ddrcon@803f0000
+[    0.000000] Zone ranges:
+[    0.000000]   Normal   [mem 0x0000000080400000-0x0000000083ffffff]
+[    0.000000] Movable zone start for each node
+[    0.000000] Early memory node ranges
+[    0.000000]   node   0: [mem 0x0000000080400000-0x0000000083ffffff]
+[    0.000000] Initmem setup node 0 [mem 0x0000000080400000-0x0000000083ffffff]
+[    0.000000] On node 0, zone Normal: 1024 pages in unavailable ranges
+[    0.000000] On node 0, zone Normal: 16384 pages in unavailable ranges
+[    0.000000] riscv: base ISA extensions aim
+[    0.000000] riscv: ELF capabilities aim
+[    0.000000] Ticket spinlock: enabled
+[    0.000000] pcpu-alloc: s0 r0 d32768 u32768 alloc=1*32768
+[    0.000000] pcpu-alloc: [0] 0 
+[    0.000000] Kernel command line: console=hvc0 earlycon=sbi loglevel=8 lpj=500000
+[    0.000000] printk: log buffer data + meta data: 131072 + 409600 = 540672 bytes
+[    0.000000] Dentry cache hash table entries: 8192 (order: 3, 32768 bytes, linear)
+[    0.000000] Inode-cache hash table entries: 4096 (order: 2, 16384 bytes, linear)
+[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 15360
+[    0.000000] mem auto-init: stack:all(zero), heap alloc:off, heap free:off
+[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+[    0.000000] RCU Tasks Trace: Setting shift to 0 and lim to 1 rcu_task_cb_adjust=1 rcu_task_cpu_ids=1.
+[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+[    0.000000] riscv-intc: 32 local interrupts mapped
+[    0.000000] clocksource: riscv_clocksource: mask: 0xffffffffffffffff max_cycles: 0x24e6a1710, max_idle_ns: 440795202120 ns
+[    0.000168] sched_clock: 64 bits at 10MHz, resolution 100ns, wraps every 4398046511100ns
+[    0.041620] Console: colour dummy device 80x25
+[    0.051236] Calibrating delay loop (skipped) preset value.. 250.00 BogoMIPS (lpj=500000)
+[    0.058481] pid_max: default: 32768 minimum: 301
+[    0.092000] Mount-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+[    0.099276] Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+[    0.492469] ASID allocator disabled (0 bits)
+[    0.563169] Memory: 34144K/61440K available (5915K kernel code, 7629K rwdata, 4096K rodata, 5335K init, 216K bss, 26912K reserved, 0K cma-reserved)
+[    0.648867] devtmpfs: initialized
+[    0.958037] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+[    0.970031] posixtimers hash table entries: 512 (order: 0, 2048 bytes, linear)
+[    0.980172] futex hash table entries: 256 (4096 bytes on 1 NUMA nodes, total 4 KiB, linear).
+[    1.014843] pinctrl core: initialized pinctrl subsystem
+[    1.193455] DMA: preallocated 128 KiB GFP_KERNEL pool for atomic allocations
+[    1.315784] SBI misaligned access exception delegation ok
+[    1.673087] HugeTLB: registered 4.00 MiB page size, pre-allocated 0 pages
+[    1.679282] HugeTLB: 0 KiB vmemmap can be freed for a 4.00 MiB page
+[    1.790770] iommu: Default domain type: Translated
+[    1.796326] iommu: DMA domain TLB invalidation policy: strict mode
+[    1.853409] mc: Linux media interface: v0.10
+[    1.870567] videodev: Linux video capture interface: v2.00
+[    1.969138] clocksource: Switched to clocksource riscv_clocksource
+[    6.894723] workingset: timestamp_bits=14 max_order=14 bucket_order=0
+[  253.926781] io scheduler mq-deadline registered
+[  253.934679] io scheduler kyber registered
+[  253.952033] io scheduler bfq registered
+[  279.975320] printk: legacy console [hvc0] enabled
+[  279.975320] printk: legacy console [hvc0] enabled
+[  279.991054] printk: legacy bootconsole [sbi0] disabled
+[  279.991054] printk: legacy bootconsole [sbi0] disabled
+[  280.026900] Serial: 8250/16550 driver, 4 ports, IRQ sharing disabled
+[  280.959511] mousedev: PS/2 mouse device common for all mice
+[  281.023047] i2c_dev: i2c /dev entries driver
+[  285.968551] clk: Disabling unused clocks
+[  285.979017] PM: genpd: Disabling unused power domains
+[  287.607180] Freeing unused kernel image (initmem) memory: 5332K
+[  287.675036] Run /init as init process
+[  287.683350]   with arguments:
+[  287.691226]     /init
+[  287.698781]   with environment:
+[  287.706754]     HOME=/
+[  287.712260]     TERM=linux
+Saving 256 bits of non-creditable seed for next boot
+Starting syslogd: OK
+Starting klogd: OK
+Running sysctl: OK
+Starting network: ip: socket: Function not implemented
+ip: socket: Function not implemented
+FAIL
+Starting crond: OK
+crond[67]: crond (busybox 1.38.0) started, log level 8
+[  344.828156] rv32-userspace: init script running as pid 68
+[  345.922856] rv32-userspace: Linux rv32 6.18.7 #2 Wed Nov 18 09:45:05 MST 2026 riscv32 GNU/Linux
+[  349.394961] rv32-userspace: processor	: 0 hart		: 0 isa		: rv32ima_zicntr_zicsr_zifencei_zaamo_zalrsc mmu		: sv32 
+[  355.499084] rv32-userspace: Mem:          39860        7608       29784        2188        2468       28816
+[  359.083271] rv32-userspace: rootfs: bin crond.reboot dev etc init lib lib32 linuxrc media mnt opt proc root run sbin sys tmp usr var 
+# uname -a
+Linux rv32 6.18.7 #2 Wed Nov 18 09:45:05 MST 2026 riscv32 GNU/Linux
+# [  375.192249] rv32-userspace: alive 1, uptime 374.06s
+head -5 /proc/cpuinfo
+processor	: 0
+hart		: 0
+isa		: rv32ima_zicntr_zicsr_zifencei_zaamo_zalrsc
+mmu		: sv32
+mvendorid	: 0x0
+# echo hello from the interactive shell
+hello from the interactive shell
+# [  387.935416] rv32-userspace: alive 2, uptime 387.07s
+echo T0 $(cut -d' ' -f1 /proc/uptime); sleep 10; echo T1 $(cut -d' ' -f1 /proc
+/uptime)
+T0 394.07
+echo sum $((123*456))
+[  401.487812] rv32-userspace: alive 3, uptime 400.63s
+free
+T1 406.46
+# echo sum $((123*456))
+sum 56088
+# free
+              total        used        free      shared  buff/cache   available
+Mem:          39860        7604       29784        2188        2472       28820
+Swap:             0           0           0
+# 

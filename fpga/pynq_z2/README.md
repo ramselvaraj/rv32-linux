@@ -34,6 +34,17 @@ Result at 50 MHz (whole SoC, post-route): 4.7k LUT, 5.0k FF, 0 BRAM, 4 DSP, WNS 
    releases the core through EMIO GPIO 0 (sysfs 960 on kernel 5.15: chip base 906 + 54).
 3. Open the console on the Pmod JA UART (3.3 V adapter, 115200 8N1).
 
+### Interactive shell without a UART adapter
+
+`DTS=board_ddrcon.dts sw/build_linux_fw.sh` builds a firmware whose console is a DDR mailbox (OpenSBI driver in
+`sw/opensbi-ddrcon`, Linux uses it as `hvc0` through the SBI debug console; BusyBox init starts `sh` on it). On the board:
+
+    sudo env XILINX_XRT=/usr /usr/local/share/pynq-venv/bin/python console.py rv32_pynq.bit fw_linux.bin     # Ctrl-] quits
+    ... --script cmds.txt --log out.txt     # non-interactive; `send.py 'cmd'` injects a line into a running console
+
+Measured on the PYNQ-Z2: boots to a `#` prompt in about 6 minutes and runs commands (`uname`, `free`, shell arithmetic, `sleep`).
+The shell is slow (uncached DDR, 50 MHz). Output is dropped, not blocked, while no host console is attached.
+
 ### Linux
 
 Use `fw_linux.bin` (from `sw/build_linux_fw.sh`) instead of `fw_payload.bin`. With no UART adapter,
@@ -68,4 +79,8 @@ responses, and a 32-cycle trace of the fetch AXI channel. It works without a UAR
   initialised by the PYNQ boot, the overlay does not touch it.
 - The Pmod UART pins are untested (no adapter yet); everything else above is verified: OpenSBI,
   the S-mode payload and Linux 6.18 to userspace run on the board.
-- Known oddity: a 10 s `sleep` advances `/proc/uptime` by only ~3.4 s; not yet investigated.
+- Resolved: a 10 s `sleep` used to advance `/proc/uptime` by only ~3.4 s. Cause: the Buildroot defconfig used old ISA
+  symbols that the current Buildroot ignores, so the userspace toolchain defaulted to IMAFD; BusyBox `sleep` contained
+  FP instructions (`fcvt.d.wu`), which trap as illegal on this RV32IMA core, so `sleep` died immediately. The defconfig now
+  selects a custom IMA architecture (no F/D/C); all userspace binaries have 0 FP instructions, and on the board
+  `sleep 10` advances uptime by 12.4 s (includes shell overhead). Evidence: `verif/findings/board/`.

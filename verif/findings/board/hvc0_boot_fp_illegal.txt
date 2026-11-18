@@ -1,0 +1,1774 @@
+
+OpenSBI v1.9
+   ____                    _____ ____ _____
+  / __ \                  / ____|  _ \_   _|
+ | |  | |_ __   ___ _ __ | (___ | |_) || |
+ | |  | | '_ \ / _ \ '_ \ \___ \|  _ < | |
+ | |__| | |_) |  __/ | | |____) | |_) || |_
+  \____/| .__/ \___|_| |_|_____/|____/_____|
+        | |
+        |_|
+
+Platform Name               : rv32-linux-pynq
+Platform Features           : medeleg
+Platform HART Count         : 1
+Platform HART Protection    : pmp
+Platform IPI Device         : aclint-mswi
+Platform Timer Device       : aclint-mtimer @ 10000000Hz
+Platform Console Device     : ddrcon
+Platform HSM Device         : ---
+Platform PMU Device         : ---
+Platform Reboot Device      : ---
+Platform Shutdown Device    : ---
+Platform Suspend Device     : ---
+Platform CPPC Device        : ---
+Firmware Base               : 0x80000000
+Firmware Size               : 573 KB
+Firmware RW Offset          : 0x80000
+Firmware RW Size            : 61 KB
+Firmware Heap Offset        : 0x86000
+Firmware Heap Size          : 37 KB (total), 0 KB (reserved), 10 KB (used), 26 KB (free)
+Firmware Scratch Size       : 4096 B (total), 300 B (used), 3796 B (free)
+Runtime SBI Version         : 3.0
+Standard SBI Extensions     : time,rfnc,ipi,base,hsm,pmu,dbcn,fwft,legacy,sse
+Experimental SBI Extensions : none
+
+Domain0 Name                : root
+Domain0 Init Order          : 0xffffffff
+Domain0 Boot HART           : 0
+Domain0 HARTs               : 0x0*
+Domain0 Region00            : 0x80080000-0x8008ffff M: (F,R,W) S/U: ()
+Domain0 Region01            : 0x80000000-0x8007ffff M: (F,R,X) S/U: ()
+Domain0 Region02            : 0x02000000-0x0200ffff M: (I,R,W) S/U: ()
+Domain0 Region03            : 0x00000000-0xffffffff M: () S/U: (R,W,X)
+Domain0 Next Address        : 0x80400000
+Domain0 Next Arg1           : 0x82200000
+Domain0 Next Mode           : S-mode
+Domain0 SysReset            : yes
+Domain0 SysSuspend          : yes
+
+Boot HART ID                : 0
+Boot HART Domain            : root
+Boot HART Priv Version      : v1.11
+Boot HART Base ISA          : rv32ima
+Boot HART ISA Extensions    : zicntr
+Boot HART PMP Count         : 16
+Boot HART PMP Granularity   : 2 bits
+Boot HART PMP Address Bits  : 32
+Boot HART MHPM Info         : 0 (0x00000000)
+Boot HART Debug Triggers    : 0 triggers
+Boot HART MIDELEG           : 0x00000222
+Boot HART MEDELEG           : 0x0000b109
+[    0.000000] Linux version 6.18.7 (ramselvaraj@px13-linux) (riscv32-buildroot-linux-musl-gcc.br_real (Buildroot -gdbeada3) 15.3.0, GNU ld (GNU Binutils) 2.45.1) #7 Wed Nov 18 08:53:34 MST 2026
+[    0.000000] OF: fdt: Ignoring memory range 0x80000000 - 0x80400000
+[    0.000000] Machine model: rv32-linux-pynq
+[    0.000000] SBI specification v3.0 detected
+[    0.000000] SBI implementation ID=0x1 Version=0x10009
+[    0.000000] SBI TIME extension detected
+[    0.000000] SBI IPI extension detected
+[    0.000000] SBI RFENCE extension detected
+[    0.000000] SBI DBCN extension detected
+[    0.000000] SBI FWFT extension detected
+[    0.000000] earlycon: sbi0 at I/O port 0x0 (options '')
+[    0.000000] printk: legacy bootconsole [sbi0] enabled
+[    0.000000] OF: reserved mem: 0x80000000..0x8007ffff (512 KiB) nomap non-reusable mmode_resv1@80000000
+[    0.000000] OF: reserved mem: 0x80080000..0x8008ffff (64 KiB) nomap non-reusable mmode_resv0@80080000
+[    0.000000] OF: reserved mem: 0x803f0000..0x803f0fff (4 KiB) nomap non-reusable ddrcon@803f0000
+[    0.000000] Zone ranges:
+[    0.000000]   Normal   [mem 0x0000000080400000-0x0000000083ffffff]
+[    0.000000] Movable zone start for each node
+[    0.000000] Early memory node ranges
+[    0.000000]   node   0: [mem 0x0000000080400000-0x0000000083ffffff]
+[    0.000000] Initmem setup node 0 [mem 0x0000000080400000-0x0000000083ffffff]
+[    0.000000] On node 0, zone Normal: 1024 pages in unavailable ranges
+[    0.000000] On node 0, zone Normal: 16384 pages in unavailable ranges
+[    0.000000] riscv: base ISA extensions aim
+[    0.000000] riscv: ELF capabilities aim
+[    0.000000] Ticket spinlock: enabled
+[    0.000000] pcpu-alloc: s0 r0 d32768 u32768 alloc=1*32768
+[    0.000000] pcpu-alloc: [0] 0 
+[    0.000000] Kernel command line: console=hvc0 earlycon=sbi loglevel=8 lpj=500000
+[    0.000000] printk: log buffer data + meta data: 131072 + 409600 = 540672 bytes
+[    0.000000] Dentry cache hash table entries: 8192 (order: 3, 32768 bytes, linear)
+[    0.000000] Inode-cache hash table entries: 4096 (order: 2, 16384 bytes, linear)
+[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 15360
+[    0.000000] mem auto-init: stack:all(zero), heap alloc:off, heap free:off
+[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+[    0.000000] RCU Tasks Trace: Setting shift to 0 and lim to 1 rcu_task_cb_adjust=1 rcu_task_cpu_ids=1.
+[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+[    0.000000] riscv-intc: 32 local interrupts mapped
+[    0.000000] clocksource: riscv_clocksource: mask: 0xffffffffffffffff max_cycles: 0x24e6a1710, max_idle_ns: 440795202120 ns
+[    0.000169] sched_clock: 64 bits at 10MHz, resolution 100ns, wraps every 4398046511100ns
+[    0.041584] Console: colour dummy device 80x25
+[    0.051179] Calibrating delay loop (skipped) preset value.. 250.00 BogoMIPS (lpj=500000)
+[    0.058404] pid_max: default: 32768 minimum: 301
+[    0.091932] Mount-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+[    0.099203] Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+[    0.492365] ASID allocator disabled (0 bits)
+[    0.563011] Memory: 34144K/61440K available (5915K kernel code, 7649K rwdata, 4096K rodata, 5315K init, 216K bss, 26912K reserved, 0K cma-reserved)
+[    0.648687] devtmpfs: initialized
+[    0.957945] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+[    0.969921] posixtimers hash table entries: 512 (order: 0, 2048 bytes, linear)
+[    0.980104] futex hash table entries: 256 (4096 bytes on 1 NUMA nodes, total 4 KiB, linear).
+[    1.014823] pinctrl core: initialized pinctrl subsystem
+[    1.193472] DMA: preallocated 128 KiB GFP_KERNEL pool for atomic allocations
+[    1.315827] SBI misaligned access exception delegation ok
+[    1.673192] HugeTLB: registered 4.00 MiB page size, pre-allocated 0 pages
+[    1.679388] HugeTLB: 0 KiB vmemmap can be freed for a 4.00 MiB page
+[    1.790846] iommu: Default domain type: Translated
+[    1.796378] iommu: DMA domain TLB invalidation policy: strict mode
+[    1.853489] mc: Linux media interface: v0.10
+[    1.870657] videodev: Linux video capture interface: v2.00
+[    1.969273] clocksource: Switched to clocksource riscv_clocksource
+[    6.951061] workingset: timestamp_bits=14 max_order=14 bucket_order=0
+[  253.315399] io scheduler mq-deadline registered
+[  253.323294] io scheduler kyber registered
+[  253.340637] io scheduler bfq registered
+[  279.331035] printk: legacy console [hvc0] enabled
+[  279.331035] printk: legacy console [hvc0] enabled
+[  279.344861] printk: legacy bootconsole [sbi0] disabled
+[  279.344861] printk: legacy bootconsole [sbi0] disabled
+[  279.380131] Serial: 8250/16550 driver, 4 ports, IRQ sharing disabled
+[  280.367968] mousedev: PS/2 mouse device common for all mice
+[  280.428672] i2c_dev: i2c /dev entries driver
+[  285.412861] clk: Disabling unused clocks
+[  285.423213] PM: genpd: Disabling unused power domains
+[  287.043815] Freeing unused kernel image (initmem) memory: 5312K
+[  287.110881] Run /init as init process
+[  287.119190]   with arguments:
+[  287.127109]     /init
+[  287.132577]   with environment:
+[  287.140552]     HOME=/
+[  287.148142]     TERM=linux
+Saving 256 bits of non-creditable seed for next boot
+Starting syslogd: OK
+Starting klogd: OK
+Running sysctl: OK
+Starting network: ip: socket: Function not implemented
+ip: socket: Function not implemented
+FAIL
+Starting crond: OK
+crond[67]: crond (busybox 1.38.0) started, log level 8
+[  344.024368] rv32-userspace: init script running as pid 68
+[  345.202973] rv32-userspace: Linux rv32 6.18.7 #7 Wed Nov 18 08:53:34 MST 2026 riscv32 GNU/Linux
+[  348.800043] rv32-userspace: processor	: 0 hart		: 0 isa		: rv32ima_zicntr_zicsr_zifencei_zaamo_zalrsc mmu		: sv32 
+[  354.732236] rv32-userspace: Mem:          39840        7500       29912        2148        2428       28944
+[  358.328459] rv32-userspace: rootfs: bin crond.reboot dev etc init lib lib32 linuxrc media mnt opt proc root run sbin sys tmp usr var 
+[  362.784165] sleep[81]: unhandled signal 4 code 0x1 at 0x68638b98 in busybox[abb98,6858d000+e9000]
+[  362.811228] CPU: 0 UID: 0 PID: 81 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  362.827266] Hardware name: rv32-linux-pynq (DT)
+[  362.836284] epc : 68638b98 ra : 68638b98 sp : 9c2d6af0
+[  362.848436]  gp : 68678800 tp : 947d4fa4 t0 : 9470dfcc
+[  362.860571]  t1 : 6859495c t2 : 9470dfcc s0 : 9c2d6be8
+[  362.872862]  s1 : 947d3850 a0 : 0000000a a1 : 9c2d6f95
+[  362.884861]  a2 : 00000009 a3 : 9c2d6f93 a4 : 00000000
+[  362.902798]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  362.914789]  s2 : 9c2d6be4 s3 : 6859583c s4 : 9c2d6f93
+[  362.926922]  s5 : 0000007c s6 : 947d32b0 s7 : 00000002
+[  362.938847]  s8 : 947d3580 s9 : 00000000 s10: 00000001
+[  362.948667]  s11: 00000000 t3 : 9477d40c t4 : b3d3c623
+[  362.960661]  t5 : 947d3850 t6 : 00000000
+[  362.971545] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  362.988247] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  368.512314] rv32-userspace: alive 1, uptime 367.38s
+# [  370.539230] sleep[86]: unhandled signal 4 code 0x1 at 0x6865ab98 in busybox[abb98,685af000+e9000]
+[  370.563241] CPU: 0 UID: 0 PID: 86 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  370.579277] Hardware name: rv32-linux-pynq (DT)
+[  370.588349] epc : 6865ab98 ra : 6865ab98 sp : 9c2d1440
+[  370.600505]  gp : 6869a800 tp : 947eafa4 t0 : 94723fcc
+[  370.616472]  t1 : 685b695c t2 : 94723fcc s0 : 9c2d1538
+[  370.628662]  s1 : 947e9850 a0 : 0000000a a1 : 9c2d1f95
+[  370.640675]  a2 : 00000009 a3 : 9c2d1f93 a4 : 00000000
+[  370.652557]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  370.664567]  s2 : 9c2d1534 s3 : 685b783c s4 : 9c2d1f93
+[  370.676851]  s5 : 0000007c s6 : 947e92b0 s7 : 00000002
+[  370.688621]  s8 : 947e9580 s9 : 00000000 s10: 00000001
+[  370.700508]  s11: 00000000 t3 : 9479340c t4 : b3d3c623
+[  370.712517]  t5 : 947e9850 t6 : 00000000
+[  370.723408] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  370.740160] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  372.271719] rv32-userspace: alive 2, uptime 371.46s
+[  373.079762] sleep[88]: unhandled signal 4 code 0x1 at 0x68685b98 in busybox[abb98,685da000+e9000]
+[  373.102778] CPU: 0 UID: 0 PID: 88 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  373.116853] Hardware name: rv32-linux-pynq (DT)
+[  373.127812] epc : 68685b98 ra : 68685b98 sp : 9c7e7a00
+[  373.139953]  gp : 686c5800 tp : 94795fa4 t0 : 946cefcc
+[  373.152108]  t1 : 685e195c t2 : 946cefcc s0 : 9c7e7af8
+[  373.164247]  s1 : 94794850 a0 : 0000000a a1 : 9c7e7f95
+[  373.176272]  a2 : 00000009 a3 : 9c7e7f93 a4 : 00000000
+[  373.188166]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  373.200181]  s2 : 9c7e7af4 s3 : 685e283c s4 : 9c7e7f93
+[  373.212318]  s5 : 0000007c s6 : 947942b0 s7 : 00000002
+[  373.224247]  s8 : 94794580 s9 : 00000000 s10: 00000001
+[  373.236139]  s11: 00000000 t3 : 9473e40c t4 : b3d3c623
+[  373.248157]  t5 : 94794850 t6 : 00000000
+[  373.259051] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  373.280479] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  374.839254] rv32-userspace: alive 3, uptime 374.04s
+[  375.646926] sleep[90]: unhandled signal 4 code 0x1 at 0x6866fb98 in busybox[abb98,685c4000+e9000]
+[  375.671708] CPU: 0 UID: 0 PID: 90 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  375.686978] Hardware name: rv32-linux-pynq (DT)
+[  375.696029] epc : 6866fb98 ra : 6866fb98 sp : 9c5577a0
+[  375.708202]  gp : 686af800 tp : 94726fa4 t0 : 9465ffcc
+[  375.720346]  t1 : 685cb95c t2 : 9465ffcc s0 : 9c557898
+[  375.732499]  s1 : 94725850 a0 : 0000000a a1 : 9c557f95
+[  375.744521]  a2 : 00000009 a3 : 9c557f93 a4 : 00000000
+[  375.756407]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  375.768420]  s2 : 9c557894 s3 : 685cc83c s4 : 9c557f93
+[  375.780569]  s5 : 0000007c s6 : 947252b0 s7 : 00000002
+[  375.792502]  s8 : 94725580 s9 : 00000000 s10: 00000001
+[  375.804502]  s11: 00000000 t3 : 946cf40c t4 : b3d3c623
+[  375.816573]  t5 : 94725850 t6 : 00000000
+[  375.827506] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  375.844273] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  378.520203] rv32-userspace: alive 4, uptime 377.37s
+[  380.904161] sleep[93]: unhandled signal 4 code 0x1 at 0x686a4b98 in busybox[abb98,685f9000+e9000]
+[  380.930970] CPU: 0 UID: 0 PID: 93 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  380.946947] Hardware name: rv32-linux-pynq (DT)
+[  380.955993] epc : 686a4b98 ra : 686a4b98 sp : 9c69eb00
+[  380.968158]  gp : 686e4800 tp : 9479bfa4 t0 : 946d4fcc
+[  380.980298]  t1 : 6860095c t2 : 946d4fcc s0 : 9c69ebf8
+[  380.992447]  s1 : 9479a850 a0 : 0000000a a1 : 9c69ef95
+[  381.004468]  a2 : 00000009 a3 : 9c69ef93 a4 : 00000000
+[  381.016404]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  381.028424]  s2 : 9c69ebf4 s3 : 6860183c s4 : 9c69ef93
+[  381.040558]  s5 : 0000007c s6 : 9479a2b0 s7 : 00000002
+[  381.052484]  s8 : 9479a580 s9 : 00000000 s10: 00000001
+[  381.064361]  s11: 00000000 t3 : 9474440c t4 : b3d3c623
+[  381.076374]  t5 : 9479a850 t6 : 00000000
+[  381.087263] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  381.103973] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  382.714962] rv32-userspace: alive 5, uptime 381.90s
+[  383.567004] sleep[95]: unhandled signal 4 code 0x1 at 0x686b9b98 in busybox[abb98,6860e000+e9000]
+[  383.591714] CPU: 0 UID: 0 PID: 95 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  383.606947] Hardware name: rv32-linux-pynq (DT)
+[  383.615993] epc : 686b9b98 ra : 686b9b98 sp : 9c1d0900
+[  383.628191]  gp : 686f9800 tp : 9470dfa4 t0 : 94646fcc
+[  383.640333]  t1 : 6861595c t2 : 94646fcc s0 : 9c1d09f8
+[  383.652471]  s1 : 9470c850 a0 : 0000000a a1 : 9c1d0f95
+[  383.664485]  a2 : 00000009 a3 : 9c1d0f93 a4 : 00000000
+[  383.676378]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  383.688397]  s2 : 9c1d09f4 s3 : 6861683c s4 : 9c1d0f93
+[  383.700543]  s5 : 0000007c s6 : 9470c2b0 s7 : 00000002
+[  383.712471]  s8 : 9470c580 s9 : 00000000 s10: 00000001
+[  383.724350]  s11: 00000000 t3 : 946b640c t4 : b3d3c623
+[  383.736361]  t5 : 9470c850 t6 : 00000000
+[  383.747251] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  383.763961] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  385.351742] rv32-userspace: alive 6, uptime 384.54s
+[  386.167520] sleep[97]: unhandled signal 4 code 0x1 at 0x68640b98 in busybox[abb98,68595000+e9000]
+[  386.191535] CPU: 0 UID: 0 PID: 97 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  386.206801] Hardware name: rv32-linux-pynq (DT)
+[  386.215850] epc : 68640b98 ra : 68640b98 sp : 9c6566d0
+[  386.227994]  gp : 68680800 tp : 9479cfa4 t0 : 946d5fcc
+[  386.240137]  t1 : 6859c95c t2 : 946d5fcc s0 : 9c6567c8
+[  386.252277]  s1 : 9479b850 a0 : 0000000a a1 : 9c656f95
+[  386.264289]  a2 : 00000009 a3 : 9c656f93 a4 : 00000000
+[  386.276174]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  386.288203]  s2 : 9c6567c4 s3 : 6859d83c s4 : 9c656f93
+[  386.300341]  s5 : 0000007c s6 : 9479b2b0 s7 : 00000002
+[  386.312293]  s8 : 9479b580 s9 : 00000000 s10: 00000001
+[  386.324190]  s11: 00000000 t3 : 9474540c t4 : b3d3c623
+[  386.336215]  t5 : 9479b850 t6 : 00000000
+[  386.347117] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  386.363825] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  387.927869] rv32-userspace: alive 7, uptime 387.13s
+[  388.744266] sleep[99]: unhandled signal 4 code 0x1 at 0x686b7b98 in busybox[abb98,6860c000+e9000]
+[  388.771097] CPU: 0 UID: 0 PID: 99 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  388.787120] Hardware name: rv32-linux-pynq (DT)
+[  388.796164] epc : 686b7b98 ra : 686b7b98 sp : 9c313fc0
+[  388.808306]  gp : 686f7800 tp : 947adfa4 t0 : 946e6fcc
+[  388.820447]  t1 : 6861395c t2 : 946e6fcc s0 : 9c3140b8
+[  388.832577]  s1 : 947ac850 a0 : 0000000a a1 : 9c314f95
+[  388.844583]  a2 : 00000009 a3 : 9c314f93 a4 : 00000000
+[  388.856476]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  388.868487]  s2 : 9c3140b4 s3 : 6861483c s4 : 9c314f93
+[  388.880633]  s5 : 0000007c s6 : 947ac2b0 s7 : 00000002
+[  388.892577]  s8 : 947ac580 s9 : 00000000 s10: 00000001
+[  388.904503]  s11: 00000000 t3 : 9475640c t4 : b3d3c623
+[  388.916585]  t5 : 947ac850 t6 : 00000000
+[  388.927497] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  388.944205] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  390.484495] rv32-userspace: alive 8, uptime 389.66s
+[  391.623522] sleep[101]: unhandled signal 4 code 0x1 at 0x6862eb98 in busybox[abb98,68583000+e9000]
+[  391.647907] CPU: 0 UID: 0 PID: 101 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  391.667125] Hardware name: rv32-linux-pynq (DT)
+[  391.676163] epc : 6862eb98 ra : 6862eb98 sp : 9c1068f0
+[  391.688303]  gp : 6866e800 tp : 9474bfa4 t0 : 94684fcc
+[  391.700445]  t1 : 6858a95c t2 : 94684fcc s0 : 9c1069e8
+[  391.712594]  s1 : 9474a850 a0 : 0000000a a1 : 9c106f95
+[  391.724598]  a2 : 00000009 a3 : 9c106f93 a4 : 00000000
+[  391.736507]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  391.748523]  s2 : 9c1069e4 s3 : 6858b83c s4 : 9c106f93
+[  391.760685]  s5 : 0000007c s6 : 9474a2b0 s7 : 00000002
+[  391.772633]  s8 : 9474a580 s9 : 00000000 s10: 00000001
+[  391.784527]  s11: 00000000 t3 : 946f440c t4 : b3d3c623
+[  391.796543]  t5 : 9474a850 t6 : 00000000
+[  391.807437] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  391.828013] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  395.431165] rv32-userspace: alive 9, uptime 394.41s
+[  396.272289] sleep[104]: unhandled signal 4 code 0x1 at 0x686bfb98 in busybox[abb98,68614000+e9000]
+[  396.299513] CPU: 0 UID: 0 PID: 104 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  396.314772] Hardware name: rv32-linux-pynq (DT)
+[  396.323818] epc : 686bfb98 ra : 686bfb98 sp : 9c6814c0
+[  396.335959]  gp : 686ff800 tp : 947c9fa4 t0 : 94702fcc
+[  396.348095]  t1 : 6861b95c t2 : 94702fcc s0 : 9c6815b8
+[  396.360238]  s1 : 947c8850 a0 : 0000000a a1 : 9c681f95
+[  396.372262]  a2 : 00000009 a3 : 9c681f93 a4 : 00000000
+[  396.384152]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  396.396188]  s2 : 9c6815b4 s3 : 6861c83c s4 : 9c681f93
+[  396.408338]  s5 : 0000007c s6 : 947c82b0 s7 : 00000002
+[  396.420267]  s8 : 947c8580 s9 : 00000000 s10: 00000001
+[  396.432154]  s11: 00000000 t3 : 9477240c t4 : b3d3c623
+[  396.444163]  t5 : 947c8850 t6 : 00000000
+[  396.455057] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  396.471770] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  398.071308] rv32-userspace: alive 10, uptime 397.25s
+[  398.875467] sleep[106]: unhandled signal 4 code 0x1 at 0x686cfb98 in busybox[abb98,68624000+e9000]
+[  398.899825] CPU: 0 UID: 0 PID: 106 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  398.915146] Hardware name: rv32-linux-pynq (DT)
+[  398.924198] epc : 686cfb98 ra : 686cfb98 sp : 9c00b1e0
+[  398.936347]  gp : 6870f800 tp : 9474afa4 t0 : 94683fcc
+[  398.948484]  t1 : 6862b95c t2 : 94683fcc s0 : 9c00b2d8
+[  398.964427]  s1 : 94749850 a0 : 0000000a a1 : 9c00bf95
+[  398.976454]  a2 : 00000009 a3 : 9c00bf93 a4 : 00000000
+[  398.988334]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  399.000358]  s2 : 9c00b2d4 s3 : 6862c83c s4 : 9c00bf93
+[  399.012514]  s5 : 0000007c s6 : 947492b0 s7 : 00000002
+[  399.024447]  s8 : 94749580 s9 : 00000000 s10: 00000001
+[  399.036334]  s11: 00000000 t3 : 946f340c t4 : b3d3c623
+[  399.048350]  t5 : 94749850 t6 : 00000000
+[  399.059309] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  399.076016] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  400.695557] rv32-userspace: alive 11, uptime 399.89s
+[  401.483570] sleep[108]: unhandled signal 4 code 0x1 at 0x68630b98 in busybox[abb98,68585000+e9000]
+[  401.507613] CPU: 0 UID: 0 PID: 108 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  401.522902] Hardware name: rv32-linux-pynq (DT)
+[  401.531949] epc : 68630b98 ra : 68630b98 sp : 9c6e8cf0
+[  401.544098]  gp : 68670800 tp : 94709fa4 t0 : 94642fcc
+[  401.556245]  t1 : 6858c95c t2 : 94642fcc s0 : 9c6e8de8
+[  401.568387]  s1 : 94708850 a0 : 0000000a a1 : 9c6e8f95
+[  401.580422]  a2 : 00000009 a3 : 9c6e8f93 a4 : 00000000
+[  401.592316]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  401.604330]  s2 : 9c6e8de4 s3 : 6858d83c s4 : 9c6e8f93
+[  401.620631]  s5 : 0000007c s6 : 947082b0 s7 : 00000002
+[  401.632615]  s8 : 94708580 s9 : 00000000 s10: 00000001
+[  401.644548]  s11: 00000000 t3 : 946b240c t4 : b3d3c623
+[  401.656573]  t5 : 94708850 t6 : 00000000
+[  401.667476] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  401.684180] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  403.242909] rv32-userspace: alive 12, uptime 402.42s
+[  404.039106] sleep[110]: unhandled signal 4 code 0x1 at 0x68627b98 in busybox[abb98,6857c000+e9000]
+[  404.063056] CPU: 0 UID: 0 PID: 110 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  404.079147] Hardware name: rv32-linux-pynq (DT)
+[  404.088194] epc : 68627b98 ra : 68627b98 sp : 9c2759b0
+[  404.100345]  gp : 68667800 tp : 9479afa4 t0 : 946d3fcc
+[  404.112500]  t1 : 6858395c t2 : 946d3fcc s0 : 9c275aa8
+[  404.124640]  s1 : 94799850 a0 : 0000000a a1 : 9c275f95
+[  404.136649]  a2 : 00000009 a3 : 9c275f93 a4 : 00000000
+[  404.148536]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  404.160547]  s2 : 9c275aa4 s3 : 6858483c s4 : 9c275f93
+[  404.172688]  s5 : 0000007c s6 : 947992b0 s7 : 00000002
+[  404.184623]  s8 : 94799580 s9 : 00000000 s10: 00000001
+[  404.196511]  s11: 00000000 t3 : 9474340c t4 : b3d3c623
+[  404.208547]  t5 : 94799850 t6 : 00000000
+[  404.219445] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  404.236141] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  406.134842] rv32-userspace: alive 13, uptime 405.31s
+[  407.584180] sleep[112]: unhandled signal 4 code 0x1 at 0x68677b98 in busybox[abb98,685cc000+e9000]
+[  407.611317] CPU: 0 UID: 0 PID: 112 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  407.627004] Hardware name: rv32-linux-pynq (DT)
+[  407.640173] epc : 68677b98 ra : 68677b98 sp : 9c734f30
+[  407.652572]  gp : 686b7800 tp : 94728fa4 t0 : 94661fcc
+[  407.667042]  t1 : 685d395c t2 : 94661fcc s0 : 9c735028
+[  407.679498]  s1 : 94727850 a0 : 0000000a a1 : 9c735f95
+[  407.690992]  a2 : 00000009 a3 : 9c735f93 a4 : 00000000
+[  407.703189]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  407.715461]  s2 : 9c735024 s3 : 685d483c s4 : 9c735f93
+[  407.727089]  s5 : 0000007c s6 : 947272b0 s7 : 00000002
+[  407.739253]  s8 : 94727580 s9 : 00000000 s10: 00000001
+[  407.751409]  s11: 00000000 t3 : 946d140c t4 : b3d3c623
+[  407.762968]  t5 : 94727850 t6 : 00000000
+[  407.771950] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  407.791736] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  411.119474] rv32-userspace: alive 14, uptime 410.27s
+[  411.915664] sleep[115]: unhandled signal 4 code 0x1 at 0x68662b98 in busybox[abb98,685b7000+e9000]
+[  411.939937] CPU: 0 UID: 0 PID: 115 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  411.955255] Hardware name: rv32-linux-pynq (DT)
+[  411.964324] epc : 68662b98 ra : 68662b98 sp : 9c6187a0
+[  411.976476]  gp : 686a2800 tp : 9473afa4 t0 : 94673fcc
+[  411.988655]  t1 : 685be95c t2 : 94673fcc s0 : 9c618898
+[  412.002903]  s1 : 94739850 a0 : 0000000a a1 : 9c618f95
+[  412.014919]  a2 : 00000009 a3 : 9c618f93 a4 : 00000000
+[  412.026800]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  412.038815]  s2 : 9c618894 s3 : 685bf83c s4 : 9c618f93
+[  412.050968]  s5 : 0000007c s6 : 947392b0 s7 : 00000002
+[  412.062899]  s8 : 94739580 s9 : 00000000 s10: 00000001
+[  412.074781]  s11: 00000000 t3 : 946e340c t4 : b3d3c623
+[  412.086794]  t5 : 94739850 t6 : 00000000
+[  412.095615] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  412.112315] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  413.696286] rv32-userspace: alive 15, uptime 412.89s
+[  414.499507] sleep[117]: unhandled signal 4 code 0x1 at 0x68646b98 in busybox[abb98,6859b000+e9000]
+[  414.523609] CPU: 0 UID: 0 PID: 117 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  414.538913] Hardware name: rv32-linux-pynq (DT)
+[  414.547953] epc : 68646b98 ra : 68646b98 sp : 9c1be970
+[  414.560127]  gp : 68686800 tp : 9471dfa4 t0 : 94656fcc
+[  414.572281]  t1 : 685a295c t2 : 94656fcc s0 : 9c1bea68
+[  414.584446]  s1 : 9471c850 a0 : 0000000a a1 : 9c1bef95
+[  414.596460]  a2 : 00000009 a3 : 9c1bef93 a4 : 00000000
+[  414.608374]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  414.620396]  s2 : 9c1bea64 s3 : 685a383c s4 : 9c1bef93
+[  414.632591]  s5 : 0000007c s6 : 9471c2b0 s7 : 00000002
+[  414.644519]  s8 : 9471c580 s9 : 00000000 s10: 00000001
+[  414.656402]  s11: 00000000 t3 : 946c640c t4 : b3d3c623
+[  414.668412]  t5 : 9471c850 t6 : 00000000
+[  414.679304] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  414.696013] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  416.284122] rv32-userspace: alive 16, uptime 415.48s
+[  417.076053] sleep[119]: unhandled signal 4 code 0x1 at 0x68627b98 in busybox[abb98,6857c000+e9000]
+[  417.099090] CPU: 0 UID: 0 PID: 119 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  417.115104] Hardware name: rv32-linux-pynq (DT)
+[  417.124147] epc : 68627b98 ra : 68627b98 sp : 9c5f9270
+[  417.136291]  gp : 68667800 tp : 94703fa4 t0 : 9463cfcc
+[  417.148432]  t1 : 6858395c t2 : 9463cfcc s0 : 9c5f9368
+[  417.160576]  s1 : 94702850 a0 : 0000000a a1 : 9c5f9f95
+[  417.172599]  a2 : 00000009 a3 : 9c5f9f93 a4 : 00000000
+[  417.184489]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  417.196504]  s2 : 9c5f9364 s3 : 6858483c s4 : 9c5f9f93
+[  417.208645]  s5 : 0000007c s6 : 947022b0 s7 : 00000002
+[  417.220571]  s8 : 94702580 s9 : 00000000 s10: 00000001
+[  417.232458]  s11: 00000000 t3 : 946ac40c t4 : b3d3c623
+[  417.244482]  t5 : 94702850 t6 : 00000000
+[  417.255375] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  417.272094] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  418.859284] rv32-userspace: alive 17, uptime 418.05s
+[  419.639096] sleep[121]: unhandled signal 4 code 0x1 at 0x686e3b98 in busybox[abb98,68638000+e9000]
+[  419.663351] CPU: 0 UID: 0 PID: 121 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  419.678792] Hardware name: rv32-linux-pynq (DT)
+[  419.687868] epc : 686e3b98 ra : 686e3b98 sp : 9c146ac0
+[  419.700107]  gp : 68723800 tp : 947a1fa4 t0 : 946dafcc
+[  419.712478]  t1 : 6863f95c t2 : 946dafcc s0 : 9c146bb8
+[  419.726962]  s1 : 947a0850 a0 : 0000000a a1 : 9c146f95
+[  419.739015]  a2 : 00000009 a3 : 9c146f93 a4 : 00000000
+[  419.750972]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  419.763009]  s2 : 9c146bb4 s3 : 6864083c s4 : 9c146f93
+[  419.775171]  s5 : 0000007c s6 : 947a02b0 s7 : 00000002
+[  419.787112]  s8 : 947a0580 s9 : 00000000 s10: 00000001
+[  419.799020]  s11: 00000000 t3 : 9474a40c t4 : b3d3c623
+[  419.811047]  t5 : 947a0850 t6 : 00000000
+[  419.819874] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  419.839420] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  421.791631] rv32-userspace: alive 18, uptime 420.97s
+[  423.828039] sleep[123]: unhandled signal 4 code 0x1 at 0x6864bb98 in busybox[abb98,685a0000+e9000]
+[  423.851900] CPU: 0 UID: 0 PID: 123 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  423.867164] Hardware name: rv32-linux-pynq (DT)
+[  423.876202] epc : 6864bb98 ra : 6864bb98 sp : 9c0149a0
+[  423.888332]  gp : 6868b800 tp : 947bdfa4 t0 : 946f6fcc
+[  423.900475]  t1 : 685a795c t2 : 946f6fcc s0 : 9c014a98
+[  423.912603]  s1 : 947bc850 a0 : 0000000a a1 : 9c014f95
+[  423.924625]  a2 : 00000009 a3 : 9c014f93 a4 : 00000000
+[  423.936535]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  423.948542]  s2 : 9c014a94 s3 : 685a883c s4 : 9c014f93
+[  423.960675]  s5 : 0000007c s6 : 947bc2b0 s7 : 00000002
+[  423.972600]  s8 : 947bc580 s9 : 00000000 s10: 00000001
+[  423.984482]  s11: 00000000 t3 : 9476640c t4 : b3d3c623
+[  423.996484]  t5 : 947bc850 t6 : 00000000
+[  424.007366] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  424.024058] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  426.836532] rv32-userspace: alive 19, uptime 426.03s
+[  427.647934] sleep[126]: unhandled signal 4 code 0x1 at 0x686f6b98 in busybox[abb98,6864b000+e9000]
+[  427.671003] CPU: 0 UID: 0 PID: 126 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  427.687026] Hardware name: rv32-linux-pynq (DT)
+[  427.696071] epc : 686f6b98 ra : 686f6b98 sp : 9c2b03d0
+[  427.708213]  gp : 68736800 tp : 9478dfa4 t0 : 946c6fcc
+[  427.720358]  t1 : 6865295c t2 : 946c6fcc s0 : 9c2b04c8
+[  427.732499]  s1 : 9478c850 a0 : 0000000a a1 : 9c2b0f95
+[  427.744523]  a2 : 00000009 a3 : 9c2b0f93 a4 : 00000000
+[  427.756410]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  427.768422]  s2 : 9c2b04c4 s3 : 6865383c s4 : 9c2b0f93
+[  427.780560]  s5 : 0000007c s6 : 9478c2b0 s7 : 00000002
+[  427.792521]  s8 : 9478c580 s9 : 00000000 s10: 00000001
+[  427.804424]  s11: 00000000 t3 : 9473640c t4 : b3d3c623
+[  427.816448]  t5 : 9478c850 t6 : 00000000
+[  427.827347] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  427.844057] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  429.367624] rv32-userspace: alive 20, uptime 428.57s
+[  430.179574] sleep[128]: unhandled signal 4 code 0x1 at 0x68642b98 in busybox[abb98,68597000+e9000]
+[  430.203874] CPU: 0 UID: 0 PID: 128 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  430.219232] Hardware name: rv32-linux-pynq (DT)
+[  430.228289] epc : 68642b98 ra : 68642b98 sp : 9c6f17c0
+[  430.240443]  gp : 68682800 tp : 9476bfa4 t0 : 946a4fcc
+[  430.252592]  t1 : 6859e95c t2 : 946a4fcc s0 : 9c6f18b8
+[  430.266832]  s1 : 9476a850 a0 : 0000000a a1 : 9c6f1f95
+[  430.278849]  a2 : 00000009 a3 : 9c6f1f93 a4 : 00000000
+[  430.288673]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  430.300847]  s2 : 9c6f18b4 s3 : 6859f83c s4 : 9c6f1f93
+[  430.314916]  s5 : 0000007c s6 : 9476a2b0 s7 : 00000002
+[  430.326846]  s8 : 9476a580 s9 : 00000000 s10: 00000001
+[  430.336657]  s11: 00000000 t3 : 9471440c t4 : b3d3c623
+[  430.348668]  t5 : 9476a850 t6 : 00000000
+[  430.359560] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  430.376274] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  431.968146] rv32-userspace: alive 21, uptime 431.16s
+[  432.799598] sleep[130]: unhandled signal 4 code 0x1 at 0x68697b98 in busybox[abb98,685ec000+e9000]
+[  432.823109] CPU: 0 UID: 0 PID: 130 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  432.838810] Hardware name: rv32-linux-pynq (DT)
+[  432.848062] epc : 68697b98 ra : 68697b98 sp : 9c1f6500
+[  432.860492]  gp : 686d7800 tp : 947cffa4 t0 : 94708fcc
+[  432.875024]  t1 : 685f395c t2 : 94708fcc s0 : 9c1f65f8
+[  432.887484]  s1 : 947ce850 a0 : 0000000a a1 : 9c1f6f95
+[  432.899025]  a2 : 00000009 a3 : 9c1f6f93 a4 : 00000000
+[  432.911206]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  432.923494]  s2 : 9c1f65f4 s3 : 685f483c s4 : 9c1f6f93
+[  432.935175]  s5 : 0000007c s6 : 947ce2b0 s7 : 00000002
+[  432.947400]  s8 : 947ce580 s9 : 00000000 s10: 00000001
+[  432.958806]  s11: 00000000 t3 : 9477840c t4 : b3d3c623
+[  432.971071]  t5 : 947ce850 t6 : 00000000
+[  432.984072] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  433.004075] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  434.591849] rv32-userspace: alive 22, uptime 433.77s
+[  435.415532] sleep[132]: unhandled signal 4 code 0x1 at 0x686eab98 in busybox[abb98,6863f000+e9000]
+[  435.439562] CPU: 0 UID: 0 PID: 132 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  435.454843] Hardware name: rv32-linux-pynq (DT)
+[  435.463887] epc : 686eab98 ra : 686eab98 sp : 9c78a300
+[  435.476031]  gp : 6872a800 tp : 947a6fa4 t0 : 946dffcc
+[  435.488181]  t1 : 6864695c t2 : 946dffcc s0 : 9c78a3f8
+[  435.500335]  s1 : 947a5850 a0 : 0000000a a1 : 9c78af95
+[  435.512359]  a2 : 00000009 a3 : 9c78af93 a4 : 00000000
+[  435.524273]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  435.536296]  s2 : 9c78a3f4 s3 : 6864783c s4 : 9c78af93
+[  435.548444]  s5 : 0000007c s6 : 947a52b0 s7 : 00000002
+[  435.560375]  s8 : 947a5580 s9 : 00000000 s10: 00000001
+[  435.572262]  s11: 00000000 t3 : 9474f40c t4 : b3d3c623
+[  435.584277]  t5 : 947a5850 t6 : 00000000
+[  435.595173] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  435.611884] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  437.471317] rv32-userspace: alive 23, uptime 436.65s
+[  439.763984] sleep[134]: unhandled signal 4 code 0x1 at 0x686d5b98 in busybox[abb98,6862a000+e9000]
+[  439.787752] CPU: 0 UID: 0 PID: 134 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  439.803084] Hardware name: rv32-linux-pynq (DT)
+[  439.812141] epc : 686d5b98 ra : 686d5b98 sp : 9c409f30
+[  439.824279]  gp : 68715800 tp : 9479ffa4 t0 : 946d8fcc
+[  439.836420]  t1 : 6863195c t2 : 946d8fcc s0 : 9c40a028
+[  439.848554]  s1 : 9479e850 a0 : 0000000a a1 : 9c40af95
+[  439.860575]  a2 : 00000009 a3 : 9c40af93 a4 : 00000000
+[  439.872453]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  439.884468]  s2 : 9c40a024 s3 : 6863283c s4 : 9c40af93
+[  439.896605]  s5 : 0000007c s6 : 9479e2b0 s7 : 00000002
+[  439.908527]  s8 : 9479e580 s9 : 00000000 s10: 00000001
+[  439.920409]  s11: 00000000 t3 : 9474840c t4 : b3d3c623
+[  439.932415]  t5 : 9479e850 t6 : 00000000
+[  439.943295] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  439.963728] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  442.568221] rv32-userspace: alive 24, uptime 441.75s
+[  443.384263] sleep[137]: unhandled signal 4 code 0x1 at 0x68668b98 in busybox[abb98,685bd000+e9000]
+[  443.411470] CPU: 0 UID: 0 PID: 137 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  443.427530] Hardware name: rv32-linux-pynq (DT)
+[  443.436555] epc : 68668b98 ra : 68668b98 sp : 9c33dda0
+[  443.448863]  gp : 686a8800 tp : 94702fa4 t0 : 9463bfcc
+[  443.462928]  t1 : 685c495c t2 : 9463bfcc s0 : 9c33de98
+[  443.475094]  s1 : 94701850 a0 : 0000000a a1 : 9c33ef95
+[  443.487127]  a2 : 00000009 a3 : 9c33ef93 a4 : 00000000
+[  443.499014]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  443.511025]  s2 : 9c33de94 s3 : 685c583c s4 : 9c33ef93
+[  443.523179]  s5 : 0000007c s6 : 947012b0 s7 : 00000002
+[  443.535110]  s8 : 94701580 s9 : 00000000 s10: 00000001
+[  443.547007]  s11: 00000000 t3 : 946ab40c t4 : b3d3c623
+[  443.559027]  t5 : 94701850 t6 : 00000000
+[  443.567850] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  443.587374] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  445.143564] rv32-userspace: alive 25, uptime 444.33s
+[  445.979455] sleep[139]: unhandled signal 4 code 0x1 at 0x686e5b98 in busybox[abb98,6863a000+e9000]
+[  446.002986] CPU: 0 UID: 0 PID: 139 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  446.019395] Hardware name: rv32-linux-pynq (DT)
+[  446.028682] epc : 686e5b98 ra : 686e5b98 sp : 9c08b680
+[  446.043207]  gp : 68725800 tp : 9472dfa4 t0 : 94666fcc
+[  446.054828]  t1 : 6864195c t2 : 94666fcc s0 : 9c08b778
+[  446.067249]  s1 : 9472c850 a0 : 0000000a a1 : 9c08bf95
+[  446.079504]  a2 : 00000009 a3 : 9c08bf93 a4 : 00000000
+[  446.090864]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  446.103124]  s2 : 9c08b774 s3 : 6864283c s4 : 9c08bf93
+[  446.115598]  s5 : 0000007c s6 : 9472c2b0 s7 : 00000002
+[  446.127016]  s8 : 9472c580 s9 : 00000000 s10: 00000001
+[  446.139140]  s11: 00000000 t3 : 946d640c t4 : b3d3c623
+[  446.151395]  t5 : 9472c850 t6 : 00000000
+[  446.160429] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  446.180366] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  447.788558] rv32-userspace: alive 26, uptime 446.96s
+[  448.571919] sleep[141]: unhandled signal 4 code 0x1 at 0x686dcb98 in busybox[abb98,68631000+e9000]
+[  448.594965] CPU: 0 UID: 0 PID: 141 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  448.611029] Hardware name: rv32-linux-pynq (DT)
+[  448.620070] epc : 686dcb98 ra : 686dcb98 sp : 9c65f6b0
+[  448.632308]  gp : 6871c800 tp : 947d6fa4 t0 : 9470ffcc
+[  448.644470]  t1 : 6863895c t2 : 9470ffcc s0 : 9c65f7a8
+[  448.656615]  s1 : 947d5850 a0 : 0000000a a1 : 9c65ff95
+[  448.668626]  a2 : 00000009 a3 : 9c65ff93 a4 : 00000000
+[  448.680516]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  448.692530]  s2 : 9c65f7a4 s3 : 6863983c s4 : 9c65ff93
+[  448.704664]  s5 : 0000007c s6 : 947d52b0 s7 : 00000002
+[  448.716604]  s8 : 947d5580 s9 : 00000000 s10: 00000001
+[  448.728490]  s11: 00000000 t3 : 9477f40c t4 : b3d3c623
+[  448.740539]  t5 : 947d5850 t6 : 00000000
+[  448.751445] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  448.768152] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  450.352301] rv32-userspace: alive 27, uptime 449.54s
+[  451.152055] sleep[143]: unhandled signal 4 code 0x1 at 0x686f4b98 in busybox[abb98,68649000+e9000]
+[  451.175125] CPU: 0 UID: 0 PID: 143 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  451.191241] Hardware name: rv32-linux-pynq (DT)
+[  451.200302] epc : 686f4b98 ra : 686f4b98 sp : 9c5038b0
+[  451.212464]  gp : 68734800 tp : 947c4fa4 t0 : 946fdfcc
+[  451.224629]  t1 : 6865095c t2 : 946fdfcc s0 : 9c5039a8
+[  451.238859]  s1 : 947c3850 a0 : 0000000a a1 : 9c503f95
+[  451.250907]  a2 : 00000009 a3 : 9c503f93 a4 : 00000000
+[  451.262800]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  451.274815]  s2 : 9c5039a4 s3 : 6865183c s4 : 9c503f93
+[  451.286964]  s5 : 0000007c s6 : 947c32b0 s7 : 00000002
+[  451.298889]  s8 : 947c3580 s9 : 00000000 s10: 00000001
+[  451.308861]  s11: 00000000 t3 : 9476d40c t4 : b3d3c623
+[  451.322807]  t5 : 947c3850 t6 : 00000000
+[  451.331622] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  451.348342] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  453.500619] rv32-userspace: alive 28, uptime 452.48s
+[  456.132123] sleep[146]: unhandled signal 4 code 0x1 at 0x6864fb98 in busybox[abb98,685a4000+e9000]
+[  456.155437] CPU: 0 UID: 0 PID: 146 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  456.171455] Hardware name: rv32-linux-pynq (DT)
+[  456.180585] epc : 6864fb98 ra : 6864fb98 sp : 9c2490e0
+[  456.194788]  gp : 6868f800 tp : 94766fa4 t0 : 9469ffcc
+[  456.208577]  t1 : 685ab95c t2 : 9469ffcc s0 : 9c2491d8
+[  456.222821]  s1 : 94765850 a0 : 0000000a a1 : 9c249f95
+[  456.234823]  a2 : 00000009 a3 : 9c249f93 a4 : 00000000
+[  456.244651]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  456.256656]  s2 : 9c2491d4 s3 : 685ac83c s4 : 9c249f93
+[  456.275001]  s5 : 0000007c s6 : 947652b0 s7 : 00000002
+[  456.286919]  s8 : 94765580 s9 : 00000000 s10: 00000001
+[  456.298792]  s11: 00000000 t3 : 9470f40c t4 : b3d3c623
+[  456.310783]  t5 : 94765850 t6 : 00000000
+[  456.319594] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  456.336281] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  457.887626] rv32-userspace: alive 29, uptime 457.08s
+[  458.735372] sleep[148]: unhandled signal 4 code 0x1 at 0x68633b98 in busybox[abb98,68588000+e9000]
+[  458.759851] CPU: 0 UID: 0 PID: 148 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  458.775531] Hardware name: rv32-linux-pynq (DT)
+[  458.784875] epc : 68633b98 ra : 68633b98 sp : 9c1570d0
+[  458.799310]  gp : 68673800 tp : 94783fa4 t0 : 946bcfcc
+[  458.810950]  t1 : 6858f95c t2 : 946bcfcc s0 : 9c1571c8
+[  458.823408]  s1 : 94782850 a0 : 0000000a a1 : 9c157f95
+[  458.834950]  a2 : 00000009 a3 : 9c157f93 a4 : 00000000
+[  458.847094]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  458.859398]  s2 : 9c1571c4 s3 : 6859083c s4 : 9c157f93
+[  458.871074]  s5 : 0000007c s6 : 947822b0 s7 : 00000002
+[  458.883303]  s8 : 94782580 s9 : 00000000 s10: 00000001
+[  458.895469]  s11: 00000000 t3 : 9472c40c t4 : b3d3c623
+[  458.907017]  t5 : 94782850 t6 : 00000000
+[  458.916039] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  458.935972] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  460.588344] rv32-userspace: alive 30, uptime 459.77s
+[  461.406897] sleep[150]: unhandled signal 4 code 0x1 at 0x6863bb98 in busybox[abb98,68590000+e9000]
+[  461.431171] CPU: 0 UID: 0 PID: 150 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  461.447323] Hardware name: rv32-linux-pynq (DT)
+[  461.456369] epc : 6863bb98 ra : 6863bb98 sp : 9c2155d0
+[  461.468533]  gp : 6867b800 tp : 94726fa4 t0 : 9465ffcc
+[  461.480853]  t1 : 6859795c t2 : 9465ffcc s0 : 9c2156c8
+[  461.494922]  s1 : 94725850 a0 : 0000000a a1 : 9c215f95
+[  461.506943]  a2 : 00000009 a3 : 9c215f93 a4 : 00000000
+[  461.518822]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  461.530836]  s2 : 9c2156c4 s3 : 6859883c s4 : 9c215f93
+[  461.542982]  s5 : 0000007c s6 : 947252b0 s7 : 00000002
+[  461.554906]  s8 : 94725580 s9 : 00000000 s10: 00000001
+[  461.566785]  s11: 00000000 t3 : 946cf40c t4 : b3d3c623
+[  461.578812]  t5 : 94725850 t6 : 00000000
+[  461.587641] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  461.604339] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  463.135505] rv32-userspace: alive 31, uptime 462.33s
+[  463.979614] sleep[152]: unhandled signal 4 code 0x1 at 0x6866ab98 in busybox[abb98,685bf000+e9000]
+[  464.003928] CPU: 0 UID: 0 PID: 152 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  464.019200] Hardware name: rv32-linux-pynq (DT)
+[  464.028249] epc : 6866ab98 ra : 6866ab98 sp : 9c0962a0
+[  464.040389]  gp : 686aa800 tp : 94730fa4 t0 : 94669fcc
+[  464.052530]  t1 : 685c695c t2 : 94669fcc s0 : 9c096398
+[  464.064668]  s1 : 9472f850 a0 : 0000000a a1 : 9c096f95
+[  464.076846]  a2 : 00000009 a3 : 9c096f93 a4 : 00000000
+[  464.088580]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  464.100609]  s2 : 9c096394 s3 : 685c783c s4 : 9c096f93
+[  464.114849]  s5 : 0000007c s6 : 9472f2b0 s7 : 00000002
+[  464.124856]  s8 : 9472f580 s9 : 00000000 s10: 00000001
+[  464.136585]  s11: 00000000 t3 : 946d940c t4 : b3d3c623
+[  464.148595]  t5 : 9472f850 t6 : 00000000
+[  464.159487] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  464.176195] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  465.748631] rv32-userspace: alive 32, uptime 464.94s
+[  466.884086] sleep[154]: unhandled signal 4 code 0x1 at 0x686bcb98 in busybox[abb98,68611000+e9000]
+[  466.907456] CPU: 0 UID: 0 PID: 154 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  466.922778] Hardware name: rv32-linux-pynq (DT)
+[  466.931810] epc : 686bcb98 ra : 686bcb98 sp : 9c4bbe40
+[  466.943962]  gp : 686fc800 tp : 947ebfa4 t0 : 94724fcc
+[  466.956110]  t1 : 6861895c t2 : 94724fcc s0 : 9c4bbf38
+[  466.968242]  s1 : 947ea850 a0 : 0000000a a1 : 9c4bcf95
+[  466.980243]  a2 : 00000009 a3 : 9c4bcf93 a4 : 00000000
+[  466.995958]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  467.007975]  s2 : 9c4bbf34 s3 : 6861983c s4 : 9c4bcf93
+[  467.020115]  s5 : 0000007c s6 : 947ea2b0 s7 : 00000002
+[  467.032036]  s8 : 947ea580 s9 : 00000000 s10: 00000001
+[  467.043914]  s11: 00000000 t3 : 9479440c t4 : b3d3c623
+[  467.055919]  t5 : 947ea850 t6 : 00000000
+[  467.066802] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  467.084264] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  469.948855] rv32-userspace: alive 33, uptime 468.80s
+[  471.548310] sleep[157]: unhandled signal 4 code 0x1 at 0x68649b98 in busybox[abb98,6859e000+e9000]
+[  471.575674] CPU: 0 UID: 0 PID: 157 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  471.591207] Hardware name: rv32-linux-pynq (DT)
+[  471.600599] epc : 68649b98 ra : 68649b98 sp : 9c25e6a0
+[  471.615171]  gp : 68689800 tp : 9471cfa4 t0 : 94655fcc
+[  471.626902]  t1 : 685a595c t2 : 94655fcc s0 : 9c25e798
+[  471.639343]  s1 : 9471b850 a0 : 0000000a a1 : 9c25ef95
+[  471.650871]  a2 : 00000009 a3 : 9c25ef93 a4 : 00000000
+[  471.663011]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  471.675306]  s2 : 9c25e794 s3 : 685a683c s4 : 9c25ef93
+[  471.686987]  s5 : 0000007c s6 : 9471b2b0 s7 : 00000002
+[  471.699191]  s8 : 9471b580 s9 : 00000000 s10: 00000001
+[  471.711371]  s11: 00000000 t3 : 946c540c t4 : b3d3c623
+[  471.722903]  t5 : 9471b850 t6 : 00000000
+[  471.731935] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  471.751847] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  473.378911] rv32-userspace: alive 34, uptime 472.55s
+[  474.167612] sleep[159]: unhandled signal 4 code 0x1 at 0x68666b98 in busybox[abb98,685bb000+e9000]
+[  474.191674] CPU: 0 UID: 0 PID: 159 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  474.206946] Hardware name: rv32-linux-pynq (DT)
+[  474.215985] epc : 68666b98 ra : 68666b98 sp : 9c2f9880
+[  474.228128]  gp : 686a6800 tp : 9474cfa4 t0 : 94685fcc
+[  474.240263]  t1 : 685c295c t2 : 94685fcc s0 : 9c2f9978
+[  474.252412]  s1 : 9474b850 a0 : 0000000a a1 : 9c2f9f95
+[  474.264426]  a2 : 00000009 a3 : 9c2f9f93 a4 : 00000000
+[  474.276322]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  474.288341]  s2 : 9c2f9974 s3 : 685c383c s4 : 9c2f9f93
+[  474.300477]  s5 : 0000007c s6 : 9474b2b0 s7 : 00000002
+[  474.312404]  s8 : 9474b580 s9 : 00000000 s10: 00000001
+[  474.324286]  s11: 00000000 t3 : 946f540c t4 : b3d3c623
+[  474.336296]  t5 : 9474b850 t6 : 00000000
+[  474.347188] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  474.363899] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  475.963375] rv32-userspace: alive 35, uptime 475.15s
+[  476.775250] sleep[161]: unhandled signal 4 code 0x1 at 0x686ceb98 in busybox[abb98,68623000+e9000]
+[  476.799325] CPU: 0 UID: 0 PID: 161 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  476.815358] Hardware name: rv32-linux-pynq (DT)
+[  476.824404] epc : 686ceb98 ra : 686ceb98 sp : 9c0dc390
+[  476.836552]  gp : 6870e800 tp : 9474cfa4 t0 : 94685fcc
+[  476.848848]  t1 : 6862a95c t2 : 94685fcc s0 : 9c0dc488
+[  476.862928]  s1 : 9474b850 a0 : 0000000a a1 : 9c0dcf95
+[  476.874951]  a2 : 00000009 a3 : 9c0dcf93 a4 : 00000000
+[  476.886839]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  476.898847]  s2 : 9c0dc484 s3 : 6862b83c s4 : 9c0dcf93
+[  476.910993]  s5 : 0000007c s6 : 9474b2b0 s7 : 00000002
+[  476.922928]  s8 : 9474b580 s9 : 00000000 s10: 00000001
+[  476.934817]  s11: 00000000 t3 : 946f540c t4 : b3d3c623
+[  476.946841]  t5 : 9474b850 t6 : 00000000
+[  476.955651] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  476.975256] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  478.543951] rv32-userspace: alive 36, uptime 477.73s
+[  479.340582] sleep[163]: unhandled signal 4 code 0x1 at 0x68683b98 in busybox[abb98,685d8000+e9000]
+[  479.367049] CPU: 0 UID: 0 PID: 163 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  479.383098] Hardware name: rv32-linux-pynq (DT)
+[  479.392151] epc : 68683b98 ra : 68683b98 sp : 9c6dc100
+[  479.404294]  gp : 686c3800 tp : 94700fa4 t0 : 94639fcc
+[  479.420281]  t1 : 685df95c t2 : 94639fcc s0 : 9c6dc1f8
+[  479.432441]  s1 : 946ff850 a0 : 0000000a a1 : 9c6dcf95
+[  479.444463]  a2 : 00000009 a3 : 9c6dcf93 a4 : 00000000
+[  479.456350]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  479.468364]  s2 : 9c6dc1f4 s3 : 685e083c s4 : 9c6dcf93
+[  479.480508]  s5 : 0000007c s6 : 946ff2b0 s7 : 00000002
+[  479.492452]  s8 : 946ff580 s9 : 00000000 s10: 00000001
+[  479.504344]  s11: 00000000 t3 : 946a940c t4 : b3d3c623
+[  479.516365]  t5 : 946ff850 t6 : 00000000
+[  479.527280] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  479.543991] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  481.147727] rv32-userspace: alive 37, uptime 480.31s
+[  482.316300] sleep[165]: unhandled signal 4 code 0x1 at 0x68680b98 in busybox[abb98,685d5000+e9000]
+[  482.343468] CPU: 0 UID: 0 PID: 165 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  482.363368] Hardware name: rv32-linux-pynq (DT)
+[  482.372424] epc : 68680b98 ra : 68680b98 sp : 9c4eacb0
+[  482.384574]  gp : 686c0800 tp : 94723fa4 t0 : 9465cfcc
+[  482.398797]  t1 : 685dc95c t2 : 9465cfcc s0 : 9c4eada8
+[  482.410942]  s1 : 94722850 a0 : 0000000a a1 : 9c4eaf95
+[  482.422956]  a2 : 00000009 a3 : 9c4eaf93 a4 : 00000000
+[  482.434847]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  482.446868]  s2 : 9c4eada4 s3 : 685dd83c s4 : 9c4eaf93
+[  482.459007]  s5 : 0000007c s6 : 947222b0 s7 : 00000002
+[  482.470941]  s8 : 94722580 s9 : 00000000 s10: 00000001
+[  482.482823]  s11: 00000000 t3 : 946cc40c t4 : b3d3c623
+[  482.494841]  t5 : 94722850 t6 : 00000000
+[  482.503656] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  482.520423] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  486.276853] rv32-userspace: alive 38, uptime 485.08s
+[  487.087968] sleep[168]: unhandled signal 4 code 0x1 at 0x6865bb98 in busybox[abb98,685b0000+e9000]
+[  487.111063] CPU: 0 UID: 0 PID: 168 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  487.127100] Hardware name: rv32-linux-pynq (DT)
+[  487.136141] epc : 6865bb98 ra : 6865bb98 sp : 9c78b360
+[  487.148284]  gp : 6869b800 tp : 94746fa4 t0 : 9467ffcc
+[  487.160423]  t1 : 685b795c t2 : 9467ffcc s0 : 9c78b458
+[  487.172561]  s1 : 94745850 a0 : 0000000a a1 : 9c78bf95
+[  487.184571]  a2 : 00000009 a3 : 9c78bf93 a4 : 00000000
+[  487.196471]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  487.208490]  s2 : 9c78b454 s3 : 685b883c s4 : 9c78bf93
+[  487.220642]  s5 : 0000007c s6 : 947452b0 s7 : 00000002
+[  487.232588]  s8 : 94745580 s9 : 00000000 s10: 00000001
+[  487.244478]  s11: 00000000 t3 : 946ef40c t4 : b3d3c623
+[  487.260145]  t5 : 94745850 t6 : 00000000
+[  487.271034] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  487.287749] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  488.907229] rv32-userspace: alive 39, uptime 488.10s
+[  489.704599] sleep[170]: unhandled signal 4 code 0x1 at 0x6867cb98 in busybox[abb98,685d1000+e9000]
+[  489.731047] CPU: 0 UID: 0 PID: 170 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  489.747101] Hardware name: rv32-linux-pynq (DT)
+[  489.756127] epc : 6867cb98 ra : 6867cb98 sp : 9c448240
+[  489.768280]  gp : 686bc800 tp : 9476bfa4 t0 : 946a4fcc
+[  489.784536]  t1 : 685d895c t2 : 946a4fcc s0 : 9c448338
+[  489.796669]  s1 : 9476a850 a0 : 0000000a a1 : 9c448f95
+[  489.808672]  a2 : 00000009 a3 : 9c448f93 a4 : 00000000
+[  489.820550]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  489.832568]  s2 : 9c448334 s3 : 685d983c s4 : 9c448f93
+[  489.844856]  s5 : 0000007c s6 : 9476a2b0 s7 : 00000002
+[  489.856647]  s8 : 9476a580 s9 : 00000000 s10: 00000001
+[  489.868551]  s11: 00000000 t3 : 9471440c t4 : b3d3c623
+[  489.880558]  t5 : 9476a850 t6 : 00000000
+[  489.891454] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  489.908163] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  491.495570] rv32-userspace: alive 40, uptime 490.68s
+[  492.311916] sleep[172]: unhandled signal 4 code 0x1 at 0x68686b98 in busybox[abb98,685db000+e9000]
+[  492.335912] CPU: 0 UID: 0 PID: 172 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  492.351188] Hardware name: rv32-linux-pynq (DT)
+[  492.360227] epc : 68686b98 ra : 68686b98 sp : 9c1c0190
+[  492.372375]  gp : 686c6800 tp : 94780fa4 t0 : 946b9fcc
+[  492.384511]  t1 : 685e295c t2 : 946b9fcc s0 : 9c1c0288
+[  492.396655]  s1 : 9477f850 a0 : 0000000a a1 : 9c1c0f95
+[  492.408669]  a2 : 00000009 a3 : 9c1c0f93 a4 : 00000000
+[  492.420559]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  492.432584]  s2 : 9c1c0284 s3 : 685e383c s4 : 9c1c0f93
+[  492.446792]  s5 : 0000007c s6 : 9477f2b0 s7 : 00000002
+[  492.456647]  s8 : 9477f580 s9 : 00000000 s10: 00000001
+[  492.468530]  s11: 00000000 t3 : 9472940c t4 : b3d3c623
+[  492.480541]  t5 : 9477f850 t6 : 00000000
+[  492.491435] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  492.508144] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  494.104162] rv32-userspace: alive 41, uptime 493.29s
+[  494.900433] sleep[174]: unhandled signal 4 code 0x1 at 0x6861cb98 in busybox[abb98,68571000+e9000]
+[  494.927249] CPU: 0 UID: 0 PID: 174 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  494.943331] Hardware name: rv32-linux-pynq (DT)
+[  494.952373] epc : 6861cb98 ra : 6861cb98 sp : 9c7a31b0
+[  494.964530]  gp : 6865c800 tp : 94744fa4 t0 : 9467dfcc
+[  494.976679]  t1 : 6857895c t2 : 9467dfcc s0 : 9c7a32a8
+[  494.990904]  s1 : 94743850 a0 : 0000000a a1 : 9c7a3f95
+[  495.002917]  a2 : 00000009 a3 : 9c7a3f93 a4 : 00000000
+[  495.014798]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  495.026822]  s2 : 9c7a32a4 s3 : 6857983c s4 : 9c7a3f93
+[  495.038965]  s5 : 0000007c s6 : 947432b0 s7 : 00000002
+[  495.050893]  s8 : 94743580 s9 : 00000000 s10: 00000001
+[  495.062782]  s11: 00000000 t3 : 946ed40c t4 : b3d3c623
+[  495.074804]  t5 : 94743850 t6 : 00000000
+[  495.083640] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  495.100345] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  497.044549] rv32-userspace: alive 42, uptime 496.23s
+[  498.162971] sleep[176]: unhandled signal 4 code 0x1 at 0x68621b98 in busybox[abb98,68576000+e9000]
+[  498.187101] CPU: 0 UID: 0 PID: 176 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  498.203189] Hardware name: rv32-linux-pynq (DT)
+[  498.212233] epc : 68621b98 ra : 68621b98 sp : 9c43a5c0
+[  498.224391]  gp : 68661800 tp : 94774fa4 t0 : 946adfcc
+[  498.236548]  t1 : 6857d95c t2 : 946adfcc s0 : 9c43a6b8
+[  498.248678]  s1 : 94773850 a0 : 0000000a a1 : 9c43af95
+[  498.260683]  a2 : 00000009 a3 : 9c43af93 a4 : 00000000
+[  498.275123]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  498.286912]  s2 : 9c43a6b4 s3 : 6857e83c s4 : 9c43af93
+[  498.299486]  s5 : 0000007c s6 : 947732b0 s7 : 00000002
+[  498.311012]  s8 : 94773580 s9 : 00000000 s10: 00000001
+[  498.323215]  s11: 00000000 t3 : 9471d40c t4 : b3d3c623
+[  498.335562]  t5 : 94773850 t6 : 00000000
+[  498.346881] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  498.363886] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  502.091738] rv32-userspace: alive 43, uptime 501.29s
+[  502.900689] sleep[179]: unhandled signal 4 code 0x1 at 0x686f4b98 in busybox[abb98,68649000+e9000]
+[  502.927543] CPU: 0 UID: 0 PID: 179 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  502.942808] Hardware name: rv32-linux-pynq (DT)
+[  502.951849] epc : 686f4b98 ra : 686f4b98 sp : 9c7e1160
+[  502.963995]  gp : 68734800 tp : 94743fa4 t0 : 9467cfcc
+[  502.976137]  t1 : 6865095c t2 : 9467cfcc s0 : 9c7e1258
+[  502.988271]  s1 : 94742850 a0 : 0000000a a1 : 9c7e1f95
+[  503.000292]  a2 : 00000009 a3 : 9c7e1f93 a4 : 00000000
+[  503.012171]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  503.024188]  s2 : 9c7e1254 s3 : 6865183c s4 : 9c7e1f93
+[  503.036353]  s5 : 0000007c s6 : 947422b0 s7 : 00000002
+[  503.048294]  s8 : 94742580 s9 : 00000000 s10: 00000001
+[  503.060196]  s11: 00000000 t3 : 946ec40c t4 : b3d3c623
+[  503.072213]  t5 : 94742850 t6 : 00000000
+[  503.083119] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  503.099844] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  504.635675] rv32-userspace: alive 44, uptime 503.81s
+[  505.447583] sleep[181]: unhandled signal 4 code 0x1 at 0x686b2b98 in busybox[abb98,68607000+e9000]
+[  505.471877] CPU: 0 UID: 0 PID: 181 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  505.487162] Hardware name: rv32-linux-pynq (DT)
+[  505.496198] epc : 686b2b98 ra : 686b2b98 sp : 9c7925c0
+[  505.508336]  gp : 686f2800 tp : 947ccfa4 t0 : 94705fcc
+[  505.520493]  t1 : 6860e95c t2 : 94705fcc s0 : 9c7926b8
+[  505.532655]  s1 : 947cb850 a0 : 0000000a a1 : 9c792f95
+[  505.544674]  a2 : 00000009 a3 : 9c792f93 a4 : 00000000
+[  505.556589]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  505.568612]  s2 : 9c7926b4 s3 : 6860f83c s4 : 9c792f93
+[  505.582838]  s5 : 0000007c s6 : 947cb2b0 s7 : 00000002
+[  505.592690]  s8 : 947cb580 s9 : 00000000 s10: 00000001
+[  505.604569]  s11: 00000000 t3 : 9477540c t4 : b3d3c623
+[  505.616577]  t5 : 947cb850 t6 : 00000000
+[  505.627521] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  505.644231] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  507.212545] rv32-userspace: alive 45, uptime 506.41s
+[  507.988606] sleep[183]: unhandled signal 4 code 0x1 at 0x686a2b98 in busybox[abb98,685f7000+e9000]
+[  508.016573] CPU: 0 UID: 0 PID: 183 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  508.031121] Hardware name: rv32-linux-pynq (DT)
+[  508.040184] epc : 686a2b98 ra : 686a2b98 sp : 9c5bd1f0
+[  508.052334]  gp : 686e2800 tp : 94747fa4 t0 : 94680fcc
+[  508.064474]  t1 : 685fe95c t2 : 94680fcc s0 : 9c5bd2e8
+[  508.076610]  s1 : 94746850 a0 : 0000000a a1 : 9c5bdf95
+[  508.088621]  a2 : 00000009 a3 : 9c5bdf93 a4 : 00000000
+[  508.100508]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  508.112514]  s2 : 9c5bd2e4 s3 : 685ff83c s4 : 9c5bdf93
+[  508.124662]  s5 : 0000007c s6 : 947462b0 s7 : 00000002
+[  508.136587]  s8 : 94746580 s9 : 00000000 s10: 00000001
+[  508.148489]  s11: 00000000 t3 : 946f040c t4 : b3d3c623
+[  508.160518]  t5 : 94746850 t6 : 00000000
+[  508.171419] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  508.188136] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  509.872023] rv32-userspace: alive 46, uptime 509.03s
+[  510.695132] sleep[185]: unhandled signal 4 code 0x1 at 0x686ebb98 in busybox[abb98,68640000+e9000]
+[  510.719554] CPU: 0 UID: 0 PID: 185 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  510.734835] Hardware name: rv32-linux-pynq (DT)
+[  510.743873] epc : 686ebb98 ra : 686ebb98 sp : 9c04a9d0
+[  510.756014]  gp : 6872b800 tp : 94720fa4 t0 : 94659fcc
+[  510.768171]  t1 : 6864795c t2 : 94659fcc s0 : 9c04aac8
+[  510.780310]  s1 : 9471f850 a0 : 0000000a a1 : 9c04af95
+[  510.792355]  a2 : 00000009 a3 : 9c04af93 a4 : 00000000
+[  510.808197]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  510.820211]  s2 : 9c04aac4 s3 : 6864883c s4 : 9c04af93
+[  510.832352]  s5 : 0000007c s6 : 9471f2b0 s7 : 00000002
+[  510.844282]  s8 : 9471f580 s9 : 00000000 s10: 00000001
+[  510.856179]  s11: 00000000 t3 : 946c940c t4 : b3d3c623
+[  510.868214]  t5 : 9471f850 t6 : 00000000
+[  510.879107] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  510.899648] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  512.743959] rv32-userspace: alive 47, uptime 511.93s
+[  514.780116] sleep[187]: unhandled signal 4 code 0x1 at 0x6861bb98 in busybox[abb98,68570000+e9000]
+[  514.803411] CPU: 0 UID: 0 PID: 187 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  514.819484] Hardware name: rv32-linux-pynq (DT)
+[  514.828552] epc : 6861bb98 ra : 6861bb98 sp : 9c761f00
+[  514.840852]  gp : 6865b800 tp : 94761fa4 t0 : 9469afcc
+[  514.854904]  t1 : 6857795c t2 : 9469afcc s0 : 9c761ff8
+[  514.867040]  s1 : 94760850 a0 : 0000000a a1 : 9c762f95
+[  514.879074]  a2 : 00000009 a3 : 9c762f93 a4 : 00000000
+[  514.890968]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  514.902993]  s2 : 9c761ff4 s3 : 6857883c s4 : 9c762f93
+[  514.915128]  s5 : 0000007c s6 : 947602b0 s7 : 00000002
+[  514.927052]  s8 : 94760580 s9 : 00000000 s10: 00000001
+[  514.938950]  s11: 00000000 t3 : 9470a40c t4 : b3d3c623
+[  514.950964]  t5 : 94760850 t6 : 00000000
+[  514.959795] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  514.979328] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  517.735642] rv32-userspace: alive 48, uptime 516.93s
+[  518.587409] sleep[190]: unhandled signal 4 code 0x1 at 0x68664b98 in busybox[abb98,685b9000+e9000]
+[  518.611750] CPU: 0 UID: 0 PID: 190 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  518.627082] Hardware name: rv32-linux-pynq (DT)
+[  518.636127] epc : 68664b98 ra : 68664b98 sp : 9c2b6200
+[  518.648268]  gp : 686a4800 tp : 94723fa4 t0 : 9465cfcc
+[  518.660409]  t1 : 685c095c t2 : 9465cfcc s0 : 9c2b62f8
+[  518.672546]  s1 : 94722850 a0 : 0000000a a1 : 9c2b6f95
+[  518.684568]  a2 : 00000009 a3 : 9c2b6f93 a4 : 00000000
+[  518.696460]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  518.708480]  s2 : 9c2b62f4 s3 : 685c183c s4 : 9c2b6f93
+[  518.720615]  s5 : 0000007c s6 : 947222b0 s7 : 00000002
+[  518.732543]  s8 : 94722580 s9 : 00000000 s10: 00000001
+[  518.744428]  s11: 00000000 t3 : 946cc40c t4 : b3d3c623
+[  518.756443]  t5 : 94722850 t6 : 00000000
+[  518.767336] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  518.784045] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  520.315235] rv32-userspace: alive 49, uptime 519.49s
+[  521.128572] sleep[192]: unhandled signal 4 code 0x1 at 0x6867bb98 in busybox[abb98,685d0000+e9000]
+[  521.155417] CPU: 0 UID: 0 PID: 192 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  521.171479] Hardware name: rv32-linux-pynq (DT)
+[  521.180547] epc : 6867bb98 ra : 6867bb98 sp : 9c6270e0
+[  521.192681]  gp : 686bb800 tp : 947b3fa4 t0 : 946ecfcc
+[  521.206904]  t1 : 685d795c t2 : 946ecfcc s0 : 9c6271d8
+[  521.219041]  s1 : 947b2850 a0 : 0000000a a1 : 9c627f95
+[  521.231060]  a2 : 00000009 a3 : 9c627f93 a4 : 00000000
+[  521.242944]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  521.254960]  s2 : 9c6271d4 s3 : 685d883c s4 : 9c627f93
+[  521.267109]  s5 : 0000007c s6 : 947b22b0 s7 : 00000002
+[  521.279450]  s8 : 947b2580 s9 : 00000000 s10: 00000001
+[  521.290886]  s11: 00000000 t3 : 9475c40c t4 : b3d3c623
+[  521.307142]  t5 : 947b2850 t6 : 00000000
+[  521.316074] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  521.335865] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  522.960059] rv32-userspace: alive 50, uptime 522.16s
+[  523.755401] sleep[194]: unhandled signal 4 code 0x1 at 0x6867eb98 in busybox[abb98,685d3000+e9000]
+[  523.779970] CPU: 0 UID: 0 PID: 194 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  523.794893] Hardware name: rv32-linux-pynq (DT)
+[  523.804198] epc : 6867eb98 ra : 6867eb98 sp : 9c58a5f0
+[  523.818907]  gp : 686be800 tp : 94777fa4 t0 : 946b0fcc
+[  523.831460]  t1 : 685da95c t2 : 946b0fcc s0 : 9c58a6e8
+[  523.844000]  s1 : 94776850 a0 : 0000000a a1 : 9c58af95
+[  523.856380]  a2 : 00000009 a3 : 9c58af93 a4 : 00000000
+[  523.868659]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  523.883254]  s2 : 9c58a6e4 s3 : 685db83c s4 : 9c58af93
+[  523.894999]  s5 : 0000007c s6 : 947762b0 s7 : 00000002
+[  523.907071]  s8 : 94776580 s9 : 00000000 s10: 00000001
+[  523.919018]  s11: 00000000 t3 : 9472040c t4 : b3d3c623
+[  523.931034]  t5 : 94776850 t6 : 00000000
+[  523.939855] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  523.960106] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  525.531466] rv32-userspace: alive 51, uptime 524.72s
+[  526.322897] sleep[196]: unhandled signal 4 code 0x1 at 0x68626b98 in busybox[abb98,6857b000+e9000]
+[  526.347289] CPU: 0 UID: 0 PID: 196 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  526.363320] Hardware name: rv32-linux-pynq (DT)
+[  526.372373] epc : 68626b98 ra : 68626b98 sp : 9c0ad240
+[  526.384518]  gp : 68666800 tp : 947a9fa4 t0 : 946e2fcc
+[  526.396659]  t1 : 6858295c t2 : 946e2fcc s0 : 9c0ad338
+[  526.410894]  s1 : 947a8850 a0 : 0000000a a1 : 9c0adf95
+[  526.422915]  a2 : 00000009 a3 : 9c0adf93 a4 : 00000000
+[  526.434813]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  526.446845]  s2 : 9c0ad334 s3 : 6858383c s4 : 9c0adf93
+[  526.458982]  s5 : 0000007c s6 : 947a82b0 s7 : 00000002
+[  526.470917]  s8 : 947a8580 s9 : 00000000 s10: 00000001
+[  526.482798]  s11: 00000000 t3 : 9475240c t4 : b3d3c623
+[  526.494810]  t5 : 947a8850 t6 : 00000000
+[  526.503629] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  526.524184] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  528.439908] rv32-userspace: alive 52, uptime 527.61s
+[  530.808038] sleep[198]: unhandled signal 4 code 0x1 at 0x686eab98 in busybox[abb98,6863f000+e9000]
+[  530.830926] CPU: 0 UID: 0 PID: 198 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  530.846995] Hardware name: rv32-linux-pynq (DT)
+[  530.856047] epc : 686eab98 ra : 686eab98 sp : 9c798670
+[  530.868200]  gp : 6872a800 tp : 947aafa4 t0 : 946e3fcc
+[  530.880330]  t1 : 6864695c t2 : 946e3fcc s0 : 9c798768
+[  530.892465]  s1 : 947a9850 a0 : 0000000a a1 : 9c798f95
+[  530.904471]  a2 : 00000009 a3 : 9c798f93 a4 : 00000000
+[  530.916347]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  530.932026]  s2 : 9c798764 s3 : 6864783c s4 : 9c798f93
+[  530.944143]  s5 : 0000007c s6 : 947a92b0 s7 : 00000002
+[  530.956058]  s8 : 947a9580 s9 : 00000000 s10: 00000001
+[  530.967927]  s11: 00000000 t3 : 9475340c t4 : b3d3c623
+[  530.979933]  t5 : 947a9850 t6 : 00000000
+[  530.990811] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  531.008270] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  533.467296] rv32-userspace: alive 53, uptime 532.66s
+[  534.256470] sleep[201]: unhandled signal 4 code 0x1 at 0x68670b98 in busybox[abb98,685c5000+e9000]
+[  534.283736] CPU: 0 UID: 0 PID: 201 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  534.299150] Hardware name: rv32-linux-pynq (DT)
+[  534.308369] epc : 68670b98 ra : 68670b98 sp : 9c224330
+[  534.322825]  gp : 686b0800 tp : 94736fa4 t0 : 9466ffcc
+[  534.335249]  t1 : 685cc95c t2 : 9466ffcc s0 : 9c224428
+[  534.346889]  s1 : 94735850 a0 : 0000000a a1 : 9c224f95
+[  534.363123]  a2 : 00000009 a3 : 9c224f93 a4 : 00000000
+[  534.375265]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  534.386789]  s2 : 9c224424 s3 : 685cd83c s4 : 9c224f93
+[  534.399217]  s5 : 0000007c s6 : 947352b0 s7 : 00000002
+[  534.411429]  s8 : 94735580 s9 : 00000000 s10: 00000001
+[  534.422841]  s11: 00000000 t3 : 946df40c t4 : b3d3c623
+[  534.435139]  t5 : 94735850 t6 : 00000000
+[  534.444175] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  534.464100] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  536.067499] rv32-userspace: alive 54, uptime 535.25s
+[  536.894899] sleep[203]: unhandled signal 4 code 0x1 at 0x68613b98 in busybox[abb98,68568000+e9000]
+[  536.919227] CPU: 0 UID: 0 PID: 203 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  536.935296] Hardware name: rv32-linux-pynq (DT)
+[  536.944340] epc : 68613b98 ra : 68613b98 sp : 9c08cb40
+[  536.956486]  gp : 68653800 tp : 94714fa4 t0 : 9464dfcc
+[  536.968622]  t1 : 6856f95c t2 : 9464dfcc s0 : 9c08cc38
+[  536.982854]  s1 : 94713850 a0 : 0000000a a1 : 9c08cf95
+[  536.994894]  a2 : 00000009 a3 : 9c08cf93 a4 : 00000000
+[  537.004864]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  537.018793]  s2 : 9c08cc34 s3 : 6857083c s4 : 9c08cf93
+[  537.030964]  s5 : 0000007c s6 : 947132b0 s7 : 00000002
+[  537.042901]  s8 : 94713580 s9 : 00000000 s10: 00000001
+[  537.054808]  s11: 00000000 t3 : 946bd40c t4 : b3d3c623
+[  537.066824]  t5 : 94713850 t6 : 00000000
+[  537.075644] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  537.092353] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  538.623265] rv32-userspace: alive 55, uptime 537.83s
+[  539.460328] sleep[205]: unhandled signal 4 code 0x1 at 0x686c4b98 in busybox[abb98,68619000+e9000]
+[  539.487093] CPU: 0 UID: 0 PID: 205 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  539.503159] Hardware name: rv32-linux-pynq (DT)
+[  539.512213] epc : 686c4b98 ra : 686c4b98 sp : 9c4e4210
+[  539.524354]  gp : 68704800 tp : 94743fa4 t0 : 9467cfcc
+[  539.536497]  t1 : 6862095c t2 : 9467cfcc s0 : 9c4e4308
+[  539.548638]  s1 : 94742850 a0 : 0000000a a1 : 9c4e4f95
+[  539.560640]  a2 : 00000009 a3 : 9c4e4f93 a4 : 00000000
+[  539.572526]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  539.584548]  s2 : 9c4e4304 s3 : 6862183c s4 : 9c4e4f93
+[  539.596864]  s5 : 0000007c s6 : 947422b0 s7 : 00000002
+[  539.608669]  s8 : 94742580 s9 : 00000000 s10: 00000001
+[  539.620567]  s11: 00000000 t3 : 946ec40c t4 : b3d3c623
+[  539.632640]  t5 : 94742850 t6 : 00000000
+[  539.643534] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  539.660254] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  541.244134] rv32-userspace: alive 56, uptime 540.40s
+[  542.047228] sleep[207]: unhandled signal 4 code 0x1 at 0x686c2b98 in busybox[abb98,68617000+e9000]
+[  542.072606] CPU: 0 UID: 0 PID: 207 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  542.087140] Hardware name: rv32-linux-pynq (DT)
+[  542.100139] epc : 686c2b98 ra : 686c2b98 sp : 9c629e50
+[  542.112287]  gp : 68702800 tp : 94779fa4 t0 : 946b2fcc
+[  542.124426]  t1 : 6861e95c t2 : 946b2fcc s0 : 9c629f48
+[  542.136555]  s1 : 94778850 a0 : 0000000a a1 : 9c62af95
+[  542.148559]  a2 : 00000009 a3 : 9c62af93 a4 : 00000000
+[  542.160436]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  542.172442]  s2 : 9c629f44 s3 : 6861f83c s4 : 9c62af93
+[  542.184582]  s5 : 0000007c s6 : 947782b0 s7 : 00000002
+[  542.196508]  s8 : 94778580 s9 : 00000000 s10: 00000001
+[  542.208412]  s11: 00000000 t3 : 9472240c t4 : b3d3c623
+[  542.220424]  t5 : 94778850 t6 : 00000000
+[  542.231333] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  542.248028] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  545.872026] rv32-userspace: alive 57, uptime 544.73s
+[  547.368191] sleep[210]: unhandled signal 4 code 0x1 at 0x68673b98 in busybox[abb98,685c8000+e9000]
+[  547.395494] CPU: 0 UID: 0 PID: 210 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  547.414852] Hardware name: rv32-linux-pynq (DT)
+[  547.424110] epc : 68673b98 ra : 68673b98 sp : 9c064f10
+[  547.436483]  gp : 686b3800 tp : 94781fa4 t0 : 946bafcc
+[  547.450997]  t1 : 685cf95c t2 : 946bafcc s0 : 9c065008
+[  547.463446]  s1 : 94780850 a0 : 0000000a a1 : 9c065f95
+[  547.474993]  a2 : 00000009 a3 : 9c065f93 a4 : 00000000
+[  547.487165]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  547.499455]  s2 : 9c065004 s3 : 685d083c s4 : 9c065f93
+[  547.511145]  s5 : 0000007c s6 : 947802b0 s7 : 00000002
+[  547.523352]  s8 : 94780580 s9 : 00000000 s10: 00000001
+[  547.539443]  s11: 00000000 t3 : 9472a40c t4 : b3d3c623
+[  547.550854]  t5 : 94780850 t6 : 00000000
+[  547.559915] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  547.579927] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  549.182936] rv32-userspace: alive 58, uptime 548.34s
+[  549.988463] sleep[212]: unhandled signal 4 code 0x1 at 0x68652b98 in busybox[abb98,685a7000+e9000]
+[  550.015372] CPU: 0 UID: 0 PID: 212 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  550.031432] Hardware name: rv32-linux-pynq (DT)
+[  550.040454] epc : 68652b98 ra : 68652b98 sp : 9c644080
+[  550.052611]  gp : 68692800 tp : 94747fa4 t0 : 94680fcc
+[  550.066841]  t1 : 685ae95c t2 : 94680fcc s0 : 9c644178
+[  550.078997]  s1 : 94746850 a0 : 0000000a a1 : 9c644f95
+[  550.091020]  a2 : 00000009 a3 : 9c644f93 a4 : 00000000
+[  550.102907]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  550.114917]  s2 : 9c644174 s3 : 685af83c s4 : 9c644f93
+[  550.127055]  s5 : 0000007c s6 : 947462b0 s7 : 00000002
+[  550.139008]  s8 : 94746580 s9 : 00000000 s10: 00000001
+[  550.150893]  s11: 00000000 t3 : 946f040c t4 : b3d3c623
+[  550.162910]  t5 : 94746850 t6 : 00000000
+[  550.171729] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  550.191257] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  551.771519] rv32-userspace: alive 59, uptime 550.97s
+[  552.564495] sleep[214]: unhandled signal 4 code 0x1 at 0x6864db98 in busybox[abb98,685a2000+e9000]
+[  552.591369] CPU: 0 UID: 0 PID: 214 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  552.607471] Hardware name: rv32-linux-pynq (DT)
+[  552.616520] epc : 6864db98 ra : 6864db98 sp : 9c236c60
+[  552.630827]  gp : 6868d800 tp : 9474ffa4 t0 : 94688fcc
+[  552.642973]  t1 : 685a995c t2 : 94688fcc s0 : 9c236d58
+[  552.655114]  s1 : 9474e850 a0 : 0000000a a1 : 9c236f95
+[  552.667145]  a2 : 00000009 a3 : 9c236f93 a4 : 00000000
+[  552.679027]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  552.691052]  s2 : 9c236d54 s3 : 685aa83c s4 : 9c236f93
+[  552.703203]  s5 : 0000007c s6 : 9474e2b0 s7 : 00000002
+[  552.715131]  s8 : 9474e580 s9 : 00000000 s10: 00000001
+[  552.727019]  s11: 00000000 t3 : 946f840c t4 : b3d3c623
+[  552.739052]  t5 : 9474e850 t6 : 00000000
+[  552.747880] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  552.767430] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  554.332084] rv32-userspace: alive 60, uptime 553.53s
+[  555.144192] sleep[216]: unhandled signal 4 code 0x1 at 0x686abb98 in busybox[abb98,68600000+e9000]
+[  555.171662] CPU: 0 UID: 0 PID: 216 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  555.186990] Hardware name: rv32-linux-pynq (DT)
+[  555.196039] epc : 686abb98 ra : 686abb98 sp : 9c2aa020
+[  555.208197]  gp : 686eb800 tp : 94738fa4 t0 : 94671fcc
+[  555.220333]  t1 : 6860795c t2 : 94671fcc s0 : 9c2aa118
+[  555.232473]  s1 : 94737850 a0 : 0000000a a1 : 9c2aaf95
+[  555.244487]  a2 : 00000009 a3 : 9c2aaf93 a4 : 00000000
+[  555.256371]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  555.268383]  s2 : 9c2aa114 s3 : 6860883c s4 : 9c2aaf93
+[  555.280528]  s5 : 0000007c s6 : 947372b0 s7 : 00000002
+[  555.292456]  s8 : 94737580 s9 : 00000000 s10: 00000001
+[  555.304350]  s11: 00000000 t3 : 946e140c t4 : b3d3c623
+[  555.316386]  t5 : 94737850 t6 : 00000000
+[  555.327286] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  555.347683] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  556.907098] rv32-userspace: alive 61, uptime 556.10s
+[  558.059162] sleep[218]: unhandled signal 4 code 0x1 at 0x686eab98 in busybox[abb98,6863f000+e9000]
+[  558.083098] CPU: 0 UID: 0 PID: 218 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  558.099199] Hardware name: rv32-linux-pynq (DT)
+[  558.108241] epc : 686eab98 ra : 686eab98 sp : 9c4896c0
+[  558.120416]  gp : 6872a800 tp : 94717fa4 t0 : 94650fcc
+[  558.136691]  t1 : 6864695c t2 : 94650fcc s0 : 9c4897b8
+[  558.150927]  s1 : 94716850 a0 : 0000000a a1 : 9c489f95
+[  558.162939]  a2 : 00000009 a3 : 9c489f93 a4 : 00000000
+[  558.174828]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  558.186857]  s2 : 9c4897b4 s3 : 6864783c s4 : 9c489f93
+[  558.199037]  s5 : 0000007c s6 : 947162b0 s7 : 00000002
+[  558.210991]  s8 : 94716580 s9 : 00000000 s10: 00000001
+[  558.222892]  s11: 00000000 t3 : 946c040c t4 : b3d3c623
+[  558.234906]  t5 : 94716850 t6 : 00000000
+[  558.243727] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  558.263261] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  562.015516] rv32-userspace: alive 62, uptime 560.97s
+[  562.851102] sleep[221]: unhandled signal 4 code 0x1 at 0x686aeb98 in busybox[abb98,68603000+e9000]
+[  562.875432] CPU: 0 UID: 0 PID: 221 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  562.890760] Hardware name: rv32-linux-pynq (DT)
+[  562.899843] epc : 686aeb98 ra : 686aeb98 sp : 9c2f5780
+[  562.912004]  gp : 686ee800 tp : 9479ffa4 t0 : 946d8fcc
+[  562.924196]  t1 : 6860a95c t2 : 946d8fcc s0 : 9c2f5878
+[  562.936358]  s1 : 9479e850 a0 : 0000000a a1 : 9c2f5f95
+[  562.948384]  a2 : 00000009 a3 : 9c2f5f93 a4 : 00000000
+[  562.960274]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  562.972293]  s2 : 9c2f5874 s3 : 6860b83c s4 : 9c2f5f93
+[  562.984445]  s5 : 0000007c s6 : 9479e2b0 s7 : 00000002
+[  562.996386]  s8 : 9479e580 s9 : 00000000 s10: 00000001
+[  563.008286]  s11: 00000000 t3 : 9474840c t4 : b3d3c623
+[  563.020303]  t5 : 9479e850 t6 : 00000000
+[  563.036021] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  563.055560] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  564.631146] rv32-userspace: alive 63, uptime 563.82s
+[  565.418811] sleep[223]: unhandled signal 4 code 0x1 at 0x6862db98 in busybox[abb98,68582000+e9000]
+[  565.443169] CPU: 0 UID: 0 PID: 223 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  565.459199] Hardware name: rv32-linux-pynq (DT)
+[  565.468237] epc : 6862db98 ra : 6862db98 sp : 9c2f6e70
+[  565.480381]  gp : 6866d800 tp : 94780fa4 t0 : 946b9fcc
+[  565.492521]  t1 : 6858995c t2 : 946b9fcc s0 : 9c2f6f68
+[  565.504659]  s1 : 9477f850 a0 : 0000000a a1 : 9c2f7f95
+[  565.516686]  a2 : 00000009 a3 : 9c2f7f93 a4 : 00000000
+[  565.532502]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  565.544516]  s2 : 9c2f6f64 s3 : 6858a83c s4 : 9c2f7f93
+[  565.556651]  s5 : 0000007c s6 : 9477f2b0 s7 : 00000002
+[  565.568575]  s8 : 9477f580 s9 : 00000000 s10: 00000001
+[  565.580475]  s11: 00000000 t3 : 9472940c t4 : b3d3c623
+[  565.592487]  t5 : 9477f850 t6 : 00000000
+[  565.603381] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  565.620076] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  567.203279] rv32-userspace: alive 64, uptime 566.39s
+[  568.020259] sleep[225]: unhandled signal 4 code 0x1 at 0x686a8b98 in busybox[abb98,685fd000+e9000]
+[  568.047124] CPU: 0 UID: 0 PID: 225 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  568.063214] Hardware name: rv32-linux-pynq (DT)
+[  568.072266] epc : 686a8b98 ra : 686a8b98 sp : 9c312d50
+[  568.084422]  gp : 686e8800 tp : 947c0fa4 t0 : 946f9fcc
+[  568.096561]  t1 : 6860495c t2 : 946f9fcc s0 : 9c312e48
+[  568.108852]  s1 : 947bf850 a0 : 0000000a a1 : 9c312f95
+[  568.122778]  a2 : 00000009 a3 : 9c312f93 a4 : 00000000
+[  568.132593]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  568.144601]  s2 : 9c312e44 s3 : 6860583c s4 : 9c312f93
+[  568.158836]  s5 : 0000007c s6 : 947bf2b0 s7 : 00000002
+[  568.168685]  s8 : 947bf580 s9 : 00000000 s10: 00000001
+[  568.180590]  s11: 00000000 t3 : 9476940c t4 : b3d3c623
+[  568.192610]  t5 : 947bf850 t6 : 00000000
+[  568.203534] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  568.220240] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  569.786849] rv32-userspace: alive 65, uptime 568.96s
+[  570.583401] sleep[227]: unhandled signal 4 code 0x1 at 0x68694b98 in busybox[abb98,685e9000+e9000]
+[  570.607711] CPU: 0 UID: 0 PID: 227 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  570.623051] Hardware name: rv32-linux-pynq (DT)
+[  570.632099] epc : 68694b98 ra : 68694b98 sp : 9c5a5e80
+[  570.644248]  gp : 686d4800 tp : 947a1fa4 t0 : 946dafcc
+[  570.656393]  t1 : 685f095c t2 : 946dafcc s0 : 9c5a5f78
+[  570.668536]  s1 : 947a0850 a0 : 0000000a a1 : 9c5a6f95
+[  570.680554]  a2 : 00000009 a3 : 9c5a6f93 a4 : 00000000
+[  570.692456]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  570.704479]  s2 : 9c5a5f74 s3 : 685f183c s4 : 9c5a6f93
+[  570.716641]  s5 : 0000007c s6 : 947a02b0 s7 : 00000002
+[  570.728588]  s8 : 947a0580 s9 : 00000000 s10: 00000001
+[  570.740487]  s11: 00000000 t3 : 9474a40c t4 : b3d3c623
+[  570.752507]  t5 : 947a0850 t6 : 00000000
+[  570.763405] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  570.780121] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  572.655272] rv32-userspace: alive 66, uptime 571.84s
+[  573.872395] sleep[229]: unhandled signal 4 code 0x1 at 0x6861fb98 in busybox[abb98,68574000+e9000]
+[  573.898988] CPU: 0 UID: 0 PID: 229 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  573.915068] Hardware name: rv32-linux-pynq (DT)
+[  573.924106] epc : 6861fb98 ra : 6861fb98 sp : 9c689e70
+[  573.936240]  gp : 6865f800 tp : 947cafa4 t0 : 94703fcc
+[  573.948385]  t1 : 6857b95c t2 : 94703fcc s0 : 9c689f68
+[  573.960559]  s1 : 947c9850 a0 : 0000000a a1 : 9c68af95
+[  573.972569]  a2 : 00000009 a3 : 9c68af93 a4 : 00000000
+[  573.984456]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  573.996467]  s2 : 9c689f64 s3 : 6857c83c s4 : 9c68af93
+[  574.008596]  s5 : 0000007c s6 : 947c92b0 s7 : 00000002
+[  574.020508]  s8 : 947c9580 s9 : 00000000 s10: 00000001
+[  574.032395]  s11: 00000000 t3 : 9477340c t4 : b3d3c623
+[  574.044409]  t5 : 947c9850 t6 : 00000000
+[  574.055294] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  574.071986] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  577.803185] rv32-userspace: alive 67, uptime 576.99s
+[  578.606950] sleep[232]: unhandled signal 4 code 0x1 at 0x68665b98 in busybox[abb98,685ba000+e9000]
+[  578.631735] CPU: 0 UID: 0 PID: 232 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  578.647015] Hardware name: rv32-linux-pynq (DT)
+[  578.656062] epc : 68665b98 ra : 68665b98 sp : 9c505b90
+[  578.668206]  gp : 686a5800 tp : 947affa4 t0 : 946e8fcc
+[  578.680349]  t1 : 685c195c t2 : 946e8fcc s0 : 9c505c88
+[  578.692490]  s1 : 947ae850 a0 : 0000000a a1 : 9c505f95
+[  578.704500]  a2 : 00000009 a3 : 9c505f93 a4 : 00000000
+[  578.716390]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  578.728403]  s2 : 9c505c84 s3 : 685c283c s4 : 9c505f93
+[  578.740549]  s5 : 0000007c s6 : 947ae2b0 s7 : 00000002
+[  578.752474]  s8 : 947ae580 s9 : 00000000 s10: 00000001
+[  578.764357]  s11: 00000000 t3 : 9475840c t4 : b3d3c623
+[  578.776371]  t5 : 947ae850 t6 : 00000000
+[  578.787262] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  578.803967] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  580.371522] rv32-userspace: alive 68, uptime 579.55s
+[  581.154882] sleep[234]: unhandled signal 4 code 0x1 at 0x68640b98 in busybox[abb98,68595000+e9000]
+[  581.179235] CPU: 0 UID: 0 PID: 234 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  581.195263] Hardware name: rv32-linux-pynq (DT)
+[  581.204305] epc : 68640b98 ra : 68640b98 sp : 9c5b5b80
+[  581.216453]  gp : 68680800 tp : 9471cfa4 t0 : 94655fcc
+[  581.228596]  t1 : 6859c95c t2 : 94655fcc s0 : 9c5b5c78
+[  581.242830]  s1 : 9471b850 a0 : 0000000a a1 : 9c5b5f95
+[  581.254843]  a2 : 00000009 a3 : 9c5b5f93 a4 : 00000000
+[  581.264665]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  581.276671]  s2 : 9c5b5c74 s3 : 6859d83c s4 : 9c5b5f93
+[  581.290890]  s5 : 0000007c s6 : 9471b2b0 s7 : 00000002
+[  581.302819]  s8 : 9471b580 s9 : 00000000 s10: 00000001
+[  581.312635]  s11: 00000000 t3 : 946c540c t4 : b3d3c623
+[  581.324646]  t5 : 9471b850 t6 : 00000000
+[  581.335541] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  581.352257] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  582.920168] rv32-userspace: alive 69, uptime 582.11s
+[  583.716210] sleep[236]: unhandled signal 4 code 0x1 at 0x68641b98 in busybox[abb98,68596000+e9000]
+[  583.743057] CPU: 0 UID: 0 PID: 236 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  583.759090] Hardware name: rv32-linux-pynq (DT)
+[  583.768132] epc : 68641b98 ra : 68641b98 sp : 9c6ea640
+[  583.780272]  gp : 68681800 tp : 94736fa4 t0 : 9466ffcc
+[  583.792435]  t1 : 6859d95c t2 : 9466ffcc s0 : 9c6ea738
+[  583.804576]  s1 : 94735850 a0 : 0000000a a1 : 9c6eaf95
+[  583.816602]  a2 : 00000009 a3 : 9c6eaf93 a4 : 00000000
+[  583.828496]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  583.840513]  s2 : 9c6ea734 s3 : 6859e83c s4 : 9c6eaf93
+[  583.852651]  s5 : 0000007c s6 : 947352b0 s7 : 00000002
+[  583.864576]  s8 : 94735580 s9 : 00000000 s10: 00000001
+[  583.876464]  s11: 00000000 t3 : 946df40c t4 : b3d3c623
+[  583.888476]  t5 : 94735850 t6 : 00000000
+[  583.899372] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  583.916081] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  585.543808] rv32-userspace: alive 70, uptime 584.73s
+[  586.375995] sleep[238]: unhandled signal 4 code 0x1 at 0x68665b98 in busybox[abb98,685ba000+e9000]
+[  586.399057] CPU: 0 UID: 0 PID: 238 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  586.415147] Hardware name: rv32-linux-pynq (DT)
+[  586.424192] epc : 68665b98 ra : 68665b98 sp : 9c60b9d0
+[  586.436360]  gp : 686a5800 tp : 947fffa4 t0 : 94738fcc
+[  586.448525]  t1 : 685c195c t2 : 94738fcc s0 : 9c60bac8
+[  586.460659]  s1 : 947fe850 a0 : 0000000a a1 : 9c60bf95
+[  586.472674]  a2 : 00000009 a3 : 9c60bf93 a4 : 00000000
+[  586.484560]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  586.496572]  s2 : 9c60bac4 s3 : 685c283c s4 : 9c60bf93
+[  586.508862]  s5 : 0000007c s6 : 947fe2b0 s7 : 00000002
+[  586.520640]  s8 : 947fe580 s9 : 00000000 s10: 00000001
+[  586.532526]  s11: 00000000 t3 : 947a840c t4 : b3d3c623
+[  586.544552]  t5 : 947fe850 t6 : 00000000
+[  586.555451] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  586.572154] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  588.460153] rv32-userspace: alive 71, uptime 587.67s
+[  590.083898] sleep[240]: unhandled signal 4 code 0x1 at 0x68605b98 in busybox[abb98,6855a000+e9000]
+[  590.107716] CPU: 0 UID: 0 PID: 240 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  590.122981] Hardware name: rv32-linux-pynq (DT)
+[  590.132019] epc : 68605b98 ra : 68605b98 sp : 9c3d53e0
+[  590.144153]  gp : 68645800 tp : 947a0fa4 t0 : 946d9fcc
+[  590.156283]  t1 : 6856195c t2 : 946d9fcc s0 : 9c3d54d8
+[  590.172686]  s1 : 9479f850 a0 : 0000000a a1 : 9c3d5f95
+[  590.184688]  a2 : 00000009 a3 : 9c3d5f93 a4 : 00000000
+[  590.196570]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  590.208573]  s2 : 9c3d54d4 s3 : 6856283c s4 : 9c3d5f93
+[  590.220848]  s5 : 0000007c s6 : 9479f2b0 s7 : 00000002
+[  590.232607]  s8 : 9479f580 s9 : 00000000 s10: 00000001
+[  590.244490]  s11: 00000000 t3 : 9474940c t4 : b3d3c623
+[  590.256493]  t5 : 9479f850 t6 : 00000000
+[  590.267377] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  590.284058] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  593.339643] rv32-userspace: alive 72, uptime 592.55s
+[  594.144148] sleep[243]: unhandled signal 4 code 0x1 at 0x6865fb98 in busybox[abb98,685b4000+e9000]
+[  594.171063] CPU: 0 UID: 0 PID: 243 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  594.187090] Hardware name: rv32-linux-pynq (DT)
+[  594.200135] epc : 6865fb98 ra : 6865fb98 sp : 9c17a310
+[  594.212289]  gp : 6869f800 tp : 94758fa4 t0 : 94691fcc
+[  594.224443]  t1 : 685bb95c t2 : 94691fcc s0 : 9c17a408
+[  594.236581]  s1 : 94757850 a0 : 0000000a a1 : 9c17af95
+[  594.248595]  a2 : 00000009 a3 : 9c17af93 a4 : 00000000
+[  594.260483]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  594.272497]  s2 : 9c17a404 s3 : 685bc83c s4 : 9c17af93
+[  594.284630]  s5 : 0000007c s6 : 947572b0 s7 : 00000002
+[  594.296569]  s8 : 94757580 s9 : 00000000 s10: 00000001
+[  594.308453]  s11: 00000000 t3 : 9470140c t4 : b3d3c623
+[  594.320481]  t5 : 94757850 t6 : 00000000
+[  594.331382] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  594.348078] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  595.932622] rv32-userspace: alive 73, uptime 595.12s
+[  596.739199] sleep[245]: unhandled signal 4 code 0x1 at 0x68690b98 in busybox[abb98,685e5000+e9000]
+[  596.763550] CPU: 0 UID: 0 PID: 245 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  596.778889] Hardware name: rv32-linux-pynq (DT)
+[  596.787934] epc : 68690b98 ra : 68690b98 sp : 9c29dd20
+[  596.800087]  gp : 686d0800 tp : 9475afa4 t0 : 94693fcc
+[  596.812256]  t1 : 685ec95c t2 : 94693fcc s0 : 9c29de18
+[  596.824405]  s1 : 94759850 a0 : 0000000a a1 : 9c29df95
+[  596.836427]  a2 : 00000009 a3 : 9c29df93 a4 : 00000000
+[  596.848319]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  596.860331]  s2 : 9c29de14 s3 : 685ed83c s4 : 9c29df93
+[  596.872477]  s5 : 0000007c s6 : 947592b0 s7 : 00000002
+[  596.884408]  s8 : 94759580 s9 : 00000000 s10: 00000001
+[  596.896306]  s11: 00000000 t3 : 9470340c t4 : b3d3c623
+[  596.908321]  t5 : 94759850 t6 : 00000000
+[  596.919220] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  596.935919] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  598.522819] rv32-userspace: alive 74, uptime 597.71s
+[  599.363984] sleep[247]: unhandled signal 4 code 0x1 at 0x6869ab98 in busybox[abb98,685ef000+e9000]
+[  599.387640] CPU: 0 UID: 0 PID: 247 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  599.402987] Hardware name: rv32-linux-pynq (DT)
+[  599.412016] epc : 6869ab98 ra : 6869ab98 sp : 9c168270
+[  599.424177]  gp : 686da800 tp : 94796fa4 t0 : 946cffcc
+[  599.436318]  t1 : 685f695c t2 : 946cffcc s0 : 9c168368
+[  599.448463]  s1 : 94795850 a0 : 0000000a a1 : 9c168f95
+[  599.460477]  a2 : 00000009 a3 : 9c168f93 a4 : 00000000
+[  599.472360]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  599.484370]  s2 : 9c168364 s3 : 685f783c s4 : 9c168f93
+[  599.496514]  s5 : 0000007c s6 : 947952b0 s7 : 00000002
+[  599.508445]  s8 : 94795580 s9 : 00000000 s10: 00000001
+[  599.520333]  s11: 00000000 t3 : 9473f40c t4 : b3d3c623
+[  599.532348]  t5 : 94795850 t6 : 00000000
+[  599.543243] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  599.559942] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  601.247417] rv32-userspace: alive 75, uptime 600.41s
+[  602.030793] sleep[249]: unhandled signal 4 code 0x1 at 0x686f0b98 in busybox[abb98,68645000+e9000]
+[  602.055210] CPU: 0 UID: 0 PID: 249 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  602.071239] Hardware name: rv32-linux-pynq (DT)
+[  602.080284] epc : 686f0b98 ra : 686f0b98 sp : 9c1534c0
+[  602.092429]  gp : 68730800 tp : 9470afa4 t0 : 94643fcc
+[  602.104569]  t1 : 6864c95c t2 : 94643fcc s0 : 9c1535b8
+[  602.118793]  s1 : 94709850 a0 : 0000000a a1 : 9c153f95
+[  602.130816]  a2 : 00000009 a3 : 9c153f93 a4 : 00000000
+[  602.140656]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  602.152676]  s2 : 9c1535b4 s3 : 6864d83c s4 : 9c153f93
+[  602.166894]  s5 : 0000007c s6 : 947092b0 s7 : 00000002
+[  602.178819]  s8 : 94709580 s9 : 00000000 s10: 00000001
+[  602.188626]  s11: 00000000 t3 : 946b340c t4 : b3d3c623
+[  602.204617]  t5 : 94709850 t6 : 00000000
+[  602.215509] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  602.232211] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  604.167708] rv32-userspace: alive 76, uptime 603.35s
+[  606.516036] sleep[251]: unhandled signal 4 code 0x1 at 0x68618b98 in busybox[abb98,6856d000+e9000]
+[  606.538850] CPU: 0 UID: 0 PID: 251 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  606.556474] Hardware name: rv32-linux-pynq (DT)
+[  606.566827] epc : 68618b98 ra : 68618b98 sp : 9c45de80
+[  606.578961]  gp : 68658800 tp : 947bcfa4 t0 : 946f5fcc
+[  606.591139]  t1 : 6857495c t2 : 946f5fcc s0 : 9c45df78
+[  606.603329]  s1 : 947bb850 a0 : 0000000a a1 : 9c45ef95
+[  606.615360]  a2 : 00000009 a3 : 9c45ef93 a4 : 00000000
+[  606.627309]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  606.639326]  s2 : 9c45df74 s3 : 6857583c s4 : 9c45ef93
+[  606.651469]  s5 : 0000007c s6 : 947bb2b0 s7 : 00000002
+[  606.663402]  s8 : 947bb580 s9 : 00000000 s10: 00000001
+[  606.675311]  s11: 00000000 t3 : 9476540c t4 : b3d3c623
+[  606.687329]  t5 : 947bb850 t6 : 00000000
+[  606.696151] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  606.715667] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  609.344251] rv32-userspace: alive 77, uptime 608.54s
+[  610.162972] sleep[254]: unhandled signal 4 code 0x1 at 0x6861fb98 in busybox[abb98,68574000+e9000]
+[  610.187078] CPU: 0 UID: 0 PID: 254 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  610.203104] Hardware name: rv32-linux-pynq (DT)
+[  610.212146] epc : 6861fb98 ra : 6861fb98 sp : 9c76ea00
+[  610.224287]  gp : 6865f800 tp : 947effa4 t0 : 94728fcc
+[  610.236432]  t1 : 6857b95c t2 : 94728fcc s0 : 9c76eaf8
+[  610.248579]  s1 : 947ee850 a0 : 0000000a a1 : 9c76ef95
+[  610.260593]  a2 : 00000009 a3 : 9c76ef93 a4 : 00000000
+[  610.272479]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  610.284486]  s2 : 9c76eaf4 s3 : 6857c83c s4 : 9c76ef93
+[  610.296619]  s5 : 0000007c s6 : 947ee2b0 s7 : 00000002
+[  610.308552]  s8 : 947ee580 s9 : 00000000 s10: 00000001
+[  610.322925]  s11: 00000000 t3 : 9479840c t4 : b3d3c623
+[  610.335343]  t5 : 947ee850 t6 : 00000000
+[  610.344271] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  610.364077] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  612.008087] rv32-userspace: alive 78, uptime 611.21s
+[  612.800052] sleep[256]: unhandled signal 4 code 0x1 at 0x686f5b98 in busybox[abb98,6864a000+e9000]
+[  612.827430] CPU: 0 UID: 0 PID: 256 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  612.843185] Hardware name: rv32-linux-pynq (DT)
+[  612.852538] epc : 686f5b98 ra : 686f5b98 sp : 9c71b200
+[  612.867270]  gp : 68735800 tp : 94703fa4 t0 : 9463cfcc
+[  612.879021]  t1 : 6865195c t2 : 9463cfcc s0 : 9c71b2f8
+[  612.891553]  s1 : 94702850 a0 : 0000000a a1 : 9c71bf95
+[  612.903897]  a2 : 00000009 a3 : 9c71bf93 a4 : 00000000
+[  612.920641]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  612.935193]  s2 : 9c71b2f4 s3 : 6865283c s4 : 9c71bf93
+[  612.951777]  s5 : 0000007c s6 : 947022b0 s7 : 00000002
+[  612.962944]  s8 : 94702580 s9 : 00000000 s10: 00000001
+[  612.974853]  s11: 00000000 t3 : 946ac40c t4 : b3d3c623
+[  612.987374]  t5 : 94702850 t6 : 00000000
+[  612.996447] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  613.019135] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  614.639552] rv32-userspace: alive 79, uptime 613.82s
+[  615.436626] sleep[258]: unhandled signal 4 code 0x1 at 0x68623b98 in busybox[abb98,68578000+e9000]
+[  615.463469] CPU: 0 UID: 0 PID: 258 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  615.479523] Hardware name: rv32-linux-pynq (DT)
+[  615.488546] epc : 68623b98 ra : 68623b98 sp : 9c008710
+[  615.500856]  gp : 68663800 tp : 947d3fa4 t0 : 9470cfcc
+[  615.514929]  t1 : 6857f95c t2 : 9470cfcc s0 : 9c008808
+[  615.527088]  s1 : 947d2850 a0 : 0000000a a1 : 9c008f95
+[  615.539113]  a2 : 00000009 a3 : 9c008f93 a4 : 00000000
+[  615.551000]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  615.563020]  s2 : 9c008804 s3 : 6858083c s4 : 9c008f93
+[  615.575181]  s5 : 0000007c s6 : 947d22b0 s7 : 00000002
+[  615.587112]  s8 : 947d2580 s9 : 00000000 s10: 00000001
+[  615.599010]  s11: 00000000 t3 : 9477c40c t4 : b3d3c623
+[  615.611023]  t5 : 947d2850 t6 : 00000000
+[  615.619845] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  615.639431] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  617.163130] rv32-userspace: alive 80, uptime 616.35s
+[  617.990852] sleep[260]: unhandled signal 4 code 0x1 at 0x686efb98 in busybox[abb98,68644000+e9000]
+[  618.015153] CPU: 0 UID: 0 PID: 260 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  618.031267] Hardware name: rv32-linux-pynq (DT)
+[  618.043201] epc : 686efb98 ra : 686efb98 sp : 9c4e0c10
+[  618.055328]  gp : 6872f800 tp : 94758fa4 t0 : 94691fcc
+[  618.067475]  t1 : 6864b95c t2 : 94691fcc s0 : 9c4e0d08
+[  618.078860]  s1 : 94757850 a0 : 0000000a a1 : 9c4e0f95
+[  618.090867]  a2 : 00000009 a3 : 9c4e0f93 a4 : 00000000
+[  618.100676]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  618.112677]  s2 : 9c4e0d04 s3 : 6864c83c s4 : 9c4e0f93
+[  618.126891]  s5 : 0000007c s6 : 947572b0 s7 : 00000002
+[  618.138813]  s8 : 94757580 s9 : 00000000 s10: 00000001
+[  618.148618]  s11: 00000000 t3 : 9470140c t4 : b3d3c623
+[  618.160618]  t5 : 94757850 t6 : 00000000
+[  618.171501] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  618.188207] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  621.864031] rv32-userspace: alive 81, uptime 620.72s
+[  623.386965] sleep[263]: unhandled signal 4 code 0x1 at 0x686f5b98 in busybox[abb98,6864a000+e9000]
+[  623.411350] CPU: 0 UID: 0 PID: 263 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  623.427031] Hardware name: rv32-linux-pynq (DT)
+[  623.436258] epc : 686f5b98 ra : 686f5b98 sp : 9c2ea390
+[  623.452208]  gp : 68735800 tp : 94724fa4 t0 : 9465dfcc
+[  623.464598]  t1 : 6865195c t2 : 9465dfcc s0 : 9c2ea488
+[  623.479200]  s1 : 94723850 a0 : 0000000a a1 : 9c2eaf95
+[  623.491463]  a2 : 00000009 a3 : 9c2eaf93 a4 : 00000000
+[  623.502834]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  623.515076]  s2 : 9c2ea484 s3 : 6865283c s4 : 9c2eaf93
+[  623.527488]  s5 : 0000007c s6 : 947232b0 s7 : 00000002
+[  623.538936]  s8 : 94723580 s9 : 00000000 s10: 00000001
+[  623.551080]  s11: 00000000 t3 : 946cd40c t4 : b3d3c623
+[  623.563396]  t5 : 94723850 t6 : 00000000
+[  623.572424] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  623.592347] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  625.259747] rv32-userspace: alive 82, uptime 624.45s
+[  626.087436] sleep[265]: unhandled signal 4 code 0x1 at 0x6865eb98 in busybox[abb98,685b3000+e9000]
+[  626.110843] CPU: 0 UID: 0 PID: 265 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  626.127517] Hardware name: rv32-linux-pynq (DT)
+[  626.138982] epc : 6865eb98 ra : 6865eb98 sp : 9c176ce0
+[  626.151504]  gp : 6869e800 tp : 94798fa4 t0 : 946d1fcc
+[  626.163207]  t1 : 685ba95c t2 : 946d1fcc s0 : 9c176dd8
+[  626.174944]  s1 : 94797850 a0 : 0000000a a1 : 9c176f95
+[  626.187238]  a2 : 00000009 a3 : 9c176f93 a4 : 00000000
+[  626.199487]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  626.211086]  s2 : 9c176dd4 s3 : 685bb83c s4 : 9c176f93
+[  626.222880]  s5 : 0000007c s6 : 947972b0 s7 : 00000002
+[  626.235221]  s8 : 94797580 s9 : 00000000 s10: 00000001
+[  626.247578]  s11: 00000000 t3 : 9474140c t4 : b3d3c623
+[  626.263993]  t5 : 94797850 t6 : 00000000
+[  626.275276] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  626.292652] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  627.868578] rv32-userspace: alive 83, uptime 627.06s
+[  628.655634] sleep[267]: unhandled signal 4 code 0x1 at 0x686c7b98 in busybox[abb98,6861c000+e9000]
+[  628.678752] CPU: 0 UID: 0 PID: 267 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  628.692860] Hardware name: rv32-linux-pynq (DT)
+[  628.703818] epc : 686c7b98 ra : 686c7b98 sp : 9c3481f0
+[  628.715967]  gp : 68707800 tp : 947befa4 t0 : 946f7fcc
+[  628.728113]  t1 : 6862395c t2 : 946f7fcc s0 : 9c3482e8
+[  628.740254]  s1 : 947bd850 a0 : 0000000a a1 : 9c348f95
+[  628.752270]  a2 : 00000009 a3 : 9c348f93 a4 : 00000000
+[  628.764160]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  628.776180]  s2 : 9c3482e4 s3 : 6862483c s4 : 9c348f93
+[  628.788335]  s5 : 0000007c s6 : 947bd2b0 s7 : 00000002
+[  628.800266]  s8 : 947bd580 s9 : 00000000 s10: 00000001
+[  628.812149]  s11: 00000000 t3 : 9476740c t4 : b3d3c623
+[  628.824163]  t5 : 947bd850 t6 : 00000000
+[  628.835055] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  628.851764] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  630.408185] rv32-userspace: alive 84, uptime 629.60s
+[  631.234832] sleep[269]: unhandled signal 4 code 0x1 at 0x686bdb98 in busybox[abb98,68612000+e9000]
+[  631.259172] CPU: 0 UID: 0 PID: 269 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  631.275232] Hardware name: rv32-linux-pynq (DT)
+[  631.284251] epc : 686bdb98 ra : 686bdb98 sp : 9c0a1e30
+[  631.296399]  gp : 686fd800 tp : 947a0fa4 t0 : 946d9fcc
+[  631.308542]  t1 : 6861995c t2 : 946d9fcc s0 : 9c0a1f28
+[  631.320851]  s1 : 9479f850 a0 : 0000000a a1 : 9c0a2f95
+[  631.334784]  a2 : 00000009 a3 : 9c0a2f93 a4 : 00000000
+[  631.344596]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  631.356608]  s2 : 9c0a1f24 s3 : 6861a83c s4 : 9c0a2f93
+[  631.370834]  s5 : 0000007c s6 : 9479f2b0 s7 : 00000002
+[  631.380845]  s8 : 9479f580 s9 : 00000000 s10: 00000001
+[  631.392577]  s11: 00000000 t3 : 9474940c t4 : b3d3c623
+[  631.404604]  t5 : 9479f850 t6 : 00000000
+[  631.415497] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  631.432199] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  633.064005] rv32-userspace: alive 85, uptime 632.27s
+[  634.236083] sleep[271]: unhandled signal 4 code 0x1 at 0x68634b98 in busybox[abb98,68589000+e9000]
+[  634.263351] CPU: 0 UID: 0 PID: 271 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  634.279417] Hardware name: rv32-linux-pynq (DT)
+[  634.288451] epc : 68634b98 ra : 68634b98 sp : 9c509570
+[  634.300596]  gp : 68674800 tp : 947c5fa4 t0 : 946fefcc
+[  634.314821]  t1 : 6859095c t2 : 946fefcc s0 : 9c509668
+[  634.326966]  s1 : 947c4850 a0 : 0000000a a1 : 9c509f95
+[  634.338982]  a2 : 00000009 a3 : 9c509f93 a4 : 00000000
+[  634.350866]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  634.362878]  s2 : 9c509664 s3 : 6859183c s4 : 9c509f93
+[  634.375027]  s5 : 0000007c s6 : 947c42b0 s7 : 00000002
+[  634.386957]  s8 : 947c4580 s9 : 00000000 s10: 00000001
+[  634.398841]  s11: 00000000 t3 : 9476e40c t4 : b3d3c623
+[  634.410868]  t5 : 947c4850 t6 : 00000000
+[  634.419699] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  634.439238] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  638.248332] rv32-userspace: alive 86, uptime 637.42s
+[  639.082972] sleep[274]: unhandled signal 4 code 0x1 at 0x686c0b98 in busybox[abb98,68615000+e9000]
+[  639.107693] CPU: 0 UID: 0 PID: 274 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  639.123302] Hardware name: rv32-linux-pynq (DT)
+[  639.132500] epc : 686c0b98 ra : 686c0b98 sp : 9c67aec0
+[  639.146968]  gp : 68700800 tp : 94730fa4 t0 : 94669fcc
+[  639.159335]  t1 : 6861c95c t2 : 94669fcc s0 : 9c67afb8
+[  639.170951]  s1 : 9472f850 a0 : 0000000a a1 : 9c67bf95
+[  639.183190]  a2 : 00000009 a3 : 9c67bf93 a4 : 00000000
+[  639.195304]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  639.207554]  s2 : 9c67afb4 s3 : 6861d83c s4 : 9c67bf93
+[  639.223908]  s5 : 0000007c s6 : 9472f2b0 s7 : 00000002
+[  639.236051]  s8 : 9472f580 s9 : 00000000 s10: 00000001
+[  639.248165]  s11: 00000000 t3 : 946d940c t4 : b3d3c623
+[  639.260374]  t5 : 9472f850 t6 : 00000000
+[  639.271452] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  639.288413] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  640.891899] rv32-userspace: alive 87, uptime 640.08s
+[  641.688047] sleep[276]: unhandled signal 4 code 0x1 at 0x686a7b98 in busybox[abb98,685fc000+e9000]
+[  641.719974] CPU: 0 UID: 0 PID: 276 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  641.735443] Hardware name: rv32-linux-pynq (DT)
+[  641.744608] epc : 686a7b98 ra : 686a7b98 sp : 9c166a10
+[  641.759317]  gp : 686e7800 tp : 947abfa4 t0 : 946e4fcc
+[  641.771074]  t1 : 6860395c t2 : 946e4fcc s0 : 9c166b08
+[  641.783482]  s1 : 947aa850 a0 : 0000000a a1 : 9c166f95
+[  641.794878]  a2 : 00000009 a3 : 9c166f93 a4 : 00000000
+[  641.807136]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  641.819589]  s2 : 9c166b04 s3 : 6860483c s4 : 9c166f93
+[  641.832014]  s5 : 0000007c s6 : 947aa2b0 s7 : 00000002
+[  641.844214]  s8 : 947aa580 s9 : 00000000 s10: 00000001
+[  641.856354]  s11: 00000000 t3 : 9475440c t4 : b3d3c623
+[  641.872479]  t5 : 947aa850 t6 : 00000000
+[  641.883603] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  641.903576] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  643.528063] rv32-userspace: alive 88, uptime 642.73s
+[  644.355076] sleep[278]: unhandled signal 4 code 0x1 at 0x68644b98 in busybox[abb98,68599000+e9000]
+[  644.379781] CPU: 0 UID: 0 PID: 278 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  644.395390] Hardware name: rv32-linux-pynq (DT)
+[  644.404579] epc : 68644b98 ra : 68644b98 sp : 9c641fa0
+[  644.419115]  gp : 68684800 tp : 94769fa4 t0 : 946a2fcc
+[  644.431485]  t1 : 685a095c t2 : 946a2fcc s0 : 9c642098
+[  644.443117]  s1 : 94768850 a0 : 0000000a a1 : 9c642f95
+[  644.455359]  a2 : 00000009 a3 : 9c642f93 a4 : 00000000
+[  644.467478]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  644.478983]  s2 : 9c642094 s3 : 685a183c s4 : 9c642f93
+[  644.491371]  s5 : 0000007c s6 : 947682b0 s7 : 00000002
+[  644.502802]  s8 : 94768580 s9 : 00000000 s10: 00000001
+[  644.514907]  s11: 00000000 t3 : 9471240c t4 : b3d3c623
+[  644.527165]  t5 : 94768850 t6 : 00000000
+[  644.536125] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  644.556030] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
+Illegal instruction
+[  646.380347] rv32-userspace: alive 89, uptime 645.52s
+[  647.187068] sleep[280]: unhandled signal 4 code 0x1 at 0x68646b98 in busybox[abb98,6859b000+e9000]
+[  647.211777] CPU: 0 UID: 0 PID: 280 Comm: sleep Not tainted 6.18.7 #7 NONE 
+[  647.227453] Hardware name: rv32-linux-pynq (DT)
+[  647.238907] epc : 68646b98 ra : 68646b98 sp : 9c1ba8f0
+[  647.255008]  gp : 68686800 tp : 947a5fa4 t0 : 946defcc
+[  647.266936]  t1 : 685a295c t2 : 946defcc s0 : 9c1ba9e8
+[  647.279593]  s1 : 947a4850 a0 : 0000000a a1 : 9c1baf95
+[  647.292193]  a2 : 00000009 a3 : 9c1baf93 a4 : 00000000
+[  647.306918]  a5 : 00000000 a6 : fefefeff a7 : 19999999
+[  647.319423]  s2 : 9c1ba9e4 s3 : 685a383c s4 : 9c1baf93
+[  647.332080]  s5 : 0000007c s6 : 947a42b0 s7 : 00000002
+[  647.351195]  s8 : 947a4580 s9 : 00000000 s10: 00000001
+[  647.362867]  s11: 00000000 t3 : 9474e40c t4 : b3d3c623
+[  647.375502]  t5 : 947a4850 t6 : 00000000
+[  647.386929] status: 00000020 badaddr: d21507d3 cause: 00000002
+[  647.404574] Code: b0ef dcc5 7597 0002 8593 34c5 0513 000a e0ef 2250 (07d3) d215 
