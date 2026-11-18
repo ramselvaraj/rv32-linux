@@ -7,6 +7,10 @@ module rv_ptw
   input  logic        clk,
   input  logic        rst,
   input  logic [19:0] satp_ppn,
+  input  logic        i_priv_u,      // effective privilege of the fetch / data side, and SUM/MXR:
+  input  logic        d_priv_u,      //   needed to apply the permission check before a >32-bit-PA access fault (F1)
+  input  logic        sum,
+  input  logic        mxr,
   input  logic        flush,         // sfence.vma / satp write: do not fill from an in-flight walk
 
   input  logic        i_req,
@@ -112,7 +116,11 @@ module rv_ptw
                 !pte_a || (store_q && !pte_d)) begin
               fault_q <= 1'b1;
             end else if (pte_hi) begin
-              fault_q <= 1'b1; afault_q <= 1'b1;
+              // F1: a permission violation is a page fault; the PA-range access fault only applies to a
+              // translation that would otherwise have succeeded.
+              fault_q <= 1'b1;
+              afault_q <= pte_ok(rsp_data[7:0], side_d_q ? (store_q ? ACC_W : ACC_R) : ACC_X,
+                                 side_d_q ? d_priv_u : i_priv_u, side_d_q & sum, side_d_q & mxr);
             end
           end else if (state_q == S_L0_RSP) begin
             fault_q <= 1'b1;                       // non-leaf at the last level

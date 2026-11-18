@@ -36,6 +36,10 @@ s_code:
   lw   x5, 0(x29)                      # expected: cause 13 (page fault); this core: cause 5 (access fault)
   li   x30, 0x7ff
   ecall
+  la   x1, tohost                      # back in M mode after the ecall handler: signal pass to the harness
+  li   x2, 1
+  sw   x2, 0(x1)
+1: j 1b
 handler:
   csrr x28, mcause
   csrr x29, mtval

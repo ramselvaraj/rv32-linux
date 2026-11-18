@@ -569,6 +569,7 @@ module rv_core
 
   rv_ptw u_ptw (
     .clk, .rst, .satp_ppn, .flush(tlb_flush),
+    .i_priv_u(priv == PRIV_U), .d_priv_u(m_priv_u), .sum, .mxr,
     .i_req(ptw_i_req), .i_vpn(ptw_i_vpn), .i_ack(ptw_i_ack),
     .d_req(ptw_d_req), .d_vpn(m_result[31:12]), .d_store(m_is_st), .d_ack(ptw_d_ack),
     .done(ptw_done), .done_d(ptw_done_d), .fault(ptw_fault), .afault(ptw_afault),

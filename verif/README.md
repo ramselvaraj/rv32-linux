@@ -59,7 +59,7 @@ CLINT+0xF004 reads fine but every write returns a bus error.
 
 Two divergences from Spike were judged to be real core behaviour and are documented with reproducers instead of
 being hidden: **F1** (access fault raised before the permission check for a PTE with a >32-bit PA; spec deviation,
-low impact) and **F2** (a failing `sc.w` to an unmapped address does not fault; spec-ambiguous). No RTL was changed.
+low impact) and **F2** (a failing `sc.w` to an unmapped address does not fault; spec-ambiguous). F1 has since been fixed in `rv_ptw.sv` (the PTW now applies the permission check before raising the access fault); F2 is left as is.
 
 ## Results (core @ HEAD)
 
