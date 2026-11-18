@@ -53,6 +53,7 @@ are Mermaid (`docs/diagrams/*.mmd`); regenerate with
 | `sw/` | Test runners, S-mode payload, device trees, OpenSBI build and patch |
 | `sw/linux/` | Buildroot defconfig, kernel fragment, initramfs overlay |
 | `fpga/pynq_z2/` | Vivado build and on-board runner ([bring-up guide](fpga/pynq_z2/README.md)) |
+| `verif/` | Verification: Spike lock-step co-simulation, random program generator (ALU, hazards, traps, Sv32 MMU), directed interrupt tests, coverage, mutation testing ([details](verif/README.md)) |
 | `docs/` | Design notes and diagrams |
 
 ## Quick start (simulation)
@@ -65,6 +66,14 @@ Requires Verilator (tested with 5.052), a C++ compiler, `dtc`, `curl`, `git` and
     make test-custom         # regressions + OpenSBI boot
     make test-lat            # everything again with random extra memory latency
     make test-soc            # OpenSBI boot on the FPGA SoC (AXI + serial UART) in Verilator
+
+## Verification
+
+The core is checked retire-by-retire against [Spike](https://github.com/riscv-software-src/riscv-isa-sim): all 139 riscv-tests plus
+thousands of constrained-random programs (hazards, M extension, atomics, traps, U/S privilege, Sv32 page tables with random
+flags) are identical to the reference, on zero- and random-latency memories. 61 injected RTL bugs are all caught except
+equivalent mutants, and two documented spec corner cases (`verif/findings/`) came out of it. Run it with
+`make cosim cosim-random directed mutate` (needs Spike built with commit logging; see [verif/README.md](verif/README.md)).
 
 To run something by hand:
 
