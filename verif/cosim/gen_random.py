@@ -134,13 +134,19 @@ class Gen:
                 self.e(f"sc.w {self.reg()}, {self.src()}, (x30)")
         elif kind == "csr":
             # mscratch is a free R/W CSR: write/read/set/clear it
-            op = r.choice(["csrrw", "csrrs", "csrrc"]); self.e(f"{op} {rd}, mscratch, {self.src()}")
+            if self.mode == "M":
+                op = r.choice(["csrrw", "csrrs", "csrrc"])
+                csr = r.choice(["mscratch", "mscratch", "mcause", "mtval", "sscratch", "scause", "stval", "sepc", "mcounteren", "scounteren"])
+                self.e(f"{op} {'x28' if csr in ('mcounteren', 'scounteren') else rd}, {csr}, {self.src()}")   # WARL-width CSRs never feed the pool
+                if r.random() < 0.15: self.e(f"csrw {r.choice(['mcycle', 'mcycleh', 'minstret', 'minstreth'])}, {self.src()}")
+            else:
+                op = r.choice(["csrrw", "csrrs", "csrrc"]); self.e(f"{op} {rd}, mscratch, {self.src()}")
         elif kind == "fence":
             self.e(r.choice(["fence", "fence.i"]))
     def gen_trap(self):
         r = self.r; rd = self.reg(); mode = self.mode
         c = r.choice(["ecall", "ebreak", "illegal", "illegal_csr", "mis_ld", "mis_st", "fault_ld", "fault_st",
-                      "jalr_misal", "amo_misal", "amo_fault", "xret", "csr_ro_write", "mis_ld_edge", "jalr_fault"])
+                      "jalr_misal", "amo_misal", "amo_fault", "xret", "csr_ro_write", "mis_ld_edge", "jalr_fault", "dec", "dec", "dec", "wfi_sfence"])
         if c == "ecall":
             self.e("li x30, 0"); self.e("ecall")                       # x30 != magic: handler just skips it
         elif c == "ebreak": self.e("ebreak")
@@ -169,6 +175,9 @@ class Gen:
             l = self.label()
             self.e(f"la x29, {l}"); self.e("addi x29, x29, 2"); self.e(f"jalr {rd}, 0(x29)")
             self.out.append(f"{l}:")
+        elif c == "dec": self.gen_decode_word()
+        elif c == "wfi_sfence":
+            self.e(r.choice(["wfi", "wfi", "sfence.vma x0, x0", "csrr x28, satp", "csrr x28, sstatus" if mode != "M" else "csrr x28, mstatus"]))
         elif c == "jalr_fault":
             self.e(f"li x29, {r.choice([0x40000000, 0x00003000, 0xF0000000, 0x3FFFFFF0])}"); self.e("jalr x1, 0(x29)")
         elif c == "amo_misal":
@@ -180,6 +189,10 @@ class Gen:
         r = self.r; tgt = r.choice(["U", "U", "S"]); l = self.label()
         if self.mmu: self.mmu_prepare_block(tgt)
         self.e(f"la x29, {l}"); self.e("csrw mepc, x29")
+        if r.random() < 0.6:                                            # randomise TVM(20) TW(21) TSR(22)
+            self.e("li x28, 0x700000"); self.e("csrc mstatus, x28")
+            b = r.choice([0, 0x100000, 0x200000, 0x400000, 0x700000, 0x300000])
+            if b: self.e(f"li x28, {b}"); self.e("csrs mstatus, x28")
         self.e("li x28, 0x1800"); self.e("csrc mstatus, x28")          # MPP = 00 (U)
         if tgt == "S": self.e("li x28, 0x800"); self.e("csrs mstatus, x28")
         self.e("mret")
@@ -191,6 +204,8 @@ class Gen:
     # ---- Sv32 MMU support (profile "mmu"): fixed-address page tables, see link.ld
     ROOT, L0, PGDATA, IDENT = 0x80100000, 0x80101000, 0x80110000, 0x80100800
     W0, S1, S2 = 0x10000000, 0x10400000, 0x10800000
+    S4U = 0x11800000
+    S3, S4, S5 = 0x10C00000, 0x11000000, 0x11400000        # S3: pointer to unmapped PA (PTE fetch bus error), S4: PPN above 32-bit PA, S5: non-leaf with high bits
     def pte_flags(self, force_user=None):
         r = self.r
         v = 1 if r.random() < 0.88 else 0
@@ -210,6 +225,10 @@ class Gen:
         root[self.W0 >> 22] = ((self.L0 >> 12) << 10) | 1                  # pointer to the 4 KiB-page table
         root[self.S1 >> 22] = (0x80400000 >> 12) << 10 | self.pte_flags() | 1   # aligned 4 MiB leaf (V forced)
         root[self.S2 >> 22] = (0x80401000 >> 12) << 10 | self.pte_flags() | 1   # misaligned 4 MiB leaf -> always faults
+        root[self.S3 >> 22] = (0x40000000 >> 12) << 10 | 1                   # non-leaf, next table at an unmapped PA
+        root[self.S4 >> 22] = 0x40000000 | 0xCF                              # leaf with PPN[1] bit set: PA beyond 4 GiB, all permissions OK (S blocks)
+        root[self.S4U >> 22] = 0x40000000 | 0xDF                             # same with U=1 (U blocks)
+        root[self.S5 >> 22] = 0xC0000000 | (self.L0 >> 12) << 10 | 1          # non-leaf with reserved high bits
         out += ['  .section .ptroot,"aw",@progbits', "  .align 12"] + [f"  .word {x}" for x in root]
         out += ['  .section .ptl0,"aw",@progbits', "  .align 12"] + [f"  .word {self.leaf4k(i, self.pte_flags())}" for i in range(16)] + ["  .space 4032"]
         out += ['  .section .pgdata,"aw",@progbits', "  .align 12"]
@@ -220,9 +239,10 @@ class Gen:
     def gen_vmem(self):
         r = self.r
         pick = r.random()
-        if pick < 0.70:   va = self.W0 + r.randrange(16) * 0x1000 + r.randrange(0, 0x1000, 4)
-        elif pick < 0.90: va = self.S1 + r.randrange(0, 0x400000, 4)
-        else:             va = self.S2 + r.randrange(0, 0x400000, 4)
+        if pick < 0.62:   va = self.W0 + r.randrange(16) * 0x1000 + r.randrange(0, 0x1000, 4)
+        elif pick < 0.82: va = self.S1 + r.randrange(0, 0x400000, 4)
+        elif pick < 0.88: va = self.S2 + r.randrange(0, 0x400000, 4)
+        else:             va = r.choice([self.S3, self.S4 if self.mode == "S" else self.S4U, self.S5]) + r.randrange(0, 0x400000, 4)
         if r.random() < 0.8:                                               # exercise the hot words of a page
             va = (va & ~0xFFF) | r.choice([0, 4, 8, 12])
         rd = self.reg(); k = r.random()
@@ -234,7 +254,8 @@ class Gen:
         else:          self.e(f"{r.choice(['amoadd.w', 'amoswap.w', 'amoor.w', 'amoxor.w'])} {rd}, {self.src()}, (x29)")
     def gen_vjump(self):
         r = self.r
-        va = self.W0 + r.randrange(16) * 0x1000 + r.randrange(0, 0x1000, 16) if r.random() < 0.9 else self.S2 + r.randrange(0, 0x1000, 16)
+        va = (self.W0 + r.randrange(16) * 0x1000 + r.randrange(0, 0x1000, 16)) if r.random() < 0.8 else \
+             r.choice([self.S2, self.S3, self.S4 if self.mode == "S" else self.S4U, self.S5]) + r.randrange(0, 0x1000, 16)
         self.e(f"li x29, {va}"); self.e("jalr x1, 0(x29)")                  # success lands on `ret`; a fetch fault is resumed at x1
     def mmu_prepare_block(self, tgt):
         r = self.r
@@ -249,6 +270,31 @@ class Gen:
         bits = r.choice([0, 0x40000, 0x80000, 0xC0000])
         if bits: self.e(f"li x28, {bits}"); self.e("csrs mstatus, x28")
         self.e("sfence.vma x0, x0")
+    def gen_decode_word(self):
+        """A reserved / near-valid encoding. Only opcode families that cannot redirect or clobber state if they
+        decode as legal (no jal/jalr-with-target, no stores, no CSR writes): both models must agree on legality."""
+        r = self.r; pool = lambda: r.choice(POOL)
+        fam = r.choice(["op", "opimm", "load", "amo", "fence", "branch", "jalr", "system", "lui"])
+        if fam == "op":
+            w = 0x33 | pool() << 7 | r.randrange(8) << 12 | pool() << 15 | pool() << 20 | r.choice([0, 1, 32, r.randrange(128)]) << 25
+        elif fam == "opimm":
+            w = 0x13 | pool() << 7 | r.randrange(8) << 12 | pool() << 15 | r.randrange(4096) << 20
+        elif fam == "load":
+            w = 0x03 | pool() << 7 | r.randrange(8) << 12 | 0 << 15 | r.randrange(2048) << 20          # rs1=x0: any legal one access-faults
+        elif fam == "amo":
+            w = 0x2F | pool() << 7 | r.randrange(8) << 12 | 0 << 15 | pool() << 20 | r.choice([f for f in range(32) if f != 3]) << 27 | r.randrange(4) << 25   # funct5=3 (sc.w to x0) is finding F2
+           
+        elif fam == "fence":
+            w = 0x0F | r.randrange(32) << 7 | r.randrange(8) << 12 | r.randrange(32) << 15 | r.randrange(4096) << 20
+        elif fam == "branch":
+            w = 0x63 | r.choice([2, 3]) << 12 | 0 << 15 | 0 << 20 | 0x8 << 7                                # reserved funct3 only (never a legal branch)
+        elif fam == "jalr":
+            w = 0x67 | pool() << 7 | r.choice([1, 2, 3, 4, 5, 6, 7]) << 12 | pool() << 15 | r.randrange(4096) << 20   # funct3 != 0 reserved
+        elif fam == "system":
+            w = 0x73 | r.choice([0, 0, 4]) << 12 | r.randrange(32) << 7 | r.randrange(32) << 15 | r.randrange(0x800, 4096) << 20   # reserved f3=4 / unknown funct12
+        else:
+            w = r.choice([0x37, 0x17]) | pool() << 7 | r.randrange(1 << 20) << 12
+        self.e(f".word 0x{w & 0xFFFFFFFF:08x}")
     def gen_one_simple(self):
         rd = self.reg(); r = self.r
         if r.random() < 0.5: self.e(f"{r.choice(['add','sub','xor','or','and','mul'])} {rd}, {self.src()}, {self.src()}")
@@ -256,7 +302,7 @@ class Gen:
     def program(self):
         hdr = ["  .section .text.init,\"ax\"", "  .globl _start", "_start:", "  la x31, databuf"]
         if self.profile in ("trap", "mmu"):
-            hdr += ["  la x29, handler", "  csrw mtvec, x29", "  li x29, -1", "  csrw pmpaddr0, x29", "  li x29, 0x1f", "  csrw pmpcfg0, x29"]
+            hdr += ["  csrw mstatus, x0", "  la x29, handler", "  csrw mtvec, x29", "  li x29, -1", "  csrw pmpaddr0, x29", "  li x29, 0x1f", "  csrw pmpcfg0, x29"]
         for x in POOL: hdr.append(f"  li x{x}, {self.r.choice(CORNER + [self.r.getrandbits(32)])}")
         hdr += ["  li x30, 0", "  li x1, 0", "  li x2, 0"]
         self.out = []

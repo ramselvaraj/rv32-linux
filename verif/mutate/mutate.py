@@ -14,7 +14,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 CORE = "rv_pkg rv_alu rv_regfile rv_decode rv_muldiv rv_tlb rv_ptw rv_dmux rv_fetch rv_csr rv_core".split()
 # tests the core does not support by design (debug triggers, HW misaligned data): they diverge on the clean core too
 XFAIL = {"rv32mi-p-breakpoint", "rv32ui-p-ma_data", "rv32ui-v-ma_data"}
-TB = ["sim_ram.sv", "sim_periph.sv", "tb_top.sv"]
+TB = ["sim_ram.sv", "sim_periph.sv", "tb_top.sv"]   # tb/ files are copied next to the mutated RTL
 
 # (name, file, old, new)
 M = [
@@ -76,6 +76,13 @@ M = [
  ("ad_a_unchecked_everywhere", "multi", [("rv_pkg", "if (!f[6])                 ok = 1'b0;", "if (1'b0)                 ok = 1'b0;"), ("rv_ptw", "!pte_a || (store_q && !pte_d)", "(store_q && !pte_d)")], None),
  ("ad_d_unchecked_everywhere", "multi", [("rv_pkg", "if (acc == ACC_W && !f[7]) ok = 1'b0;", "if (1'b0) ok = 1'b0;"), ("rv_ptw", "!pte_a || (store_q && !pte_d)", "!pte_a")], None),
  ("pf_cause_swap", "rv_core", "m_is_st ? EXC_STORE_PAGE : EXC_LOAD_PAGE;", "m_is_st ? EXC_LOAD_PAGE : EXC_STORE_PAGE;"),
+ ("irq_prio_msi_over_mei", "rv_csr", "if      (pend_sel[11]) irq_cause = IRQ_MEI;\n    else if (pend_sel[3])  irq_cause = IRQ_MSI;", "if      (pend_sel[3]) irq_cause = IRQ_MSI;\n    else if (pend_sel[11])  irq_cause = IRQ_MEI;"),
+ ("irq_prio_mti_over_msi", "rv_csr", "else if (pend_sel[3])  irq_cause = IRQ_MSI;\n    else if (pend_sel[7])  irq_cause = IRQ_MTI;", "else if (pend_sel[7])  irq_cause = IRQ_MTI;\n    else if (pend_sel[3])  irq_cause = IRQ_MSI;"),
+ ("irq_m_enable_ignored", "rv_csr", "assign m_en   = (priv_q != PRIV_M) || mie_q;", "assign m_en   = 1'b1;"),
+ ("irq_s_enable_ignored", "rv_csr", "(priv_q == PRIV_S && sie_q)", "(priv_q == PRIV_S)"),
+ ("irq_mideleg_ignored", "rv_csr", "assign pend_m = pend & ~mideleg_q;", "assign pend_m = pend;"),
+ ("irq_mie_mask_ignored", "rv_csr", "assign pend   = mip & mie_r_q & IRQ_ALL;", "assign pend   = mip & IRQ_ALL;"),
+ ("irq_vectored_ignored", "rv_csr", "assign vec   = trap_irq && tbase[0];", "assign vec   = 1'b0;"),
 ]
 
 
@@ -99,6 +106,19 @@ def corpus():
         if f not in seen and not f.endswith((".dump", ".hex", ".bin", ".S", ".err")) and os.path.exists(f): seen.add(f); out.append(f)
     return out
 
+def run_directed(sim, src, work):
+    n = os.path.basename(src)[:-2]; gcc = f"{ROOT}/tools/gcc/bin/riscv-none-elf-"
+    elf, binf, hexf = f"{work}/{n}.elf", f"{work}/{n}.bin", f"{work}/{n}.hex"
+    r = subprocess.run([gcc + "gcc", "-march=rv32ima_zicsr_zifencei", "-mabi=ilp32", "-nostdlib", "-nostartfiles",
+                        "-T", f"{ROOT}/verif/cosim/link.ld", "-o", elf, src], capture_output=True, text=True)
+    if r.returncode: return False, "build"
+    subprocess.run([gcc + "objcopy", "-O", "binary", elf, binf], check=True)
+    subprocess.run([sys.executable, f"{ROOT}/sw/bin2hex.py", hexf, binf], check=True)
+    th = next(l.split()[0] for l in subprocess.run([gcc + "nm", elf], capture_output=True, text=True).stdout.splitlines() if l.split()[-1] == "tohost")
+    out = subprocess.run([sim, f"+hex={hexf}", f"+tohost={th}", "+maxcycles=2000000"], capture_output=True, text=True).stdout
+    res = next((l for l in out.splitlines() if l.startswith(("PASS", "FAIL", "TIMEOUT"))), "NO RESULT")
+    return res.startswith("PASS"), res
+
 def run_mutant(m, corp):
     name, f, old, new = m
     work = tempfile.mkdtemp(prefix=f"mut_{name}_")
@@ -115,6 +135,9 @@ def run_mutant(m, corp):
                            capture_output=True, text=True)
         sim = f"{work}/obj/Vtb_top"
         if not os.path.exists(sim): return name, "BUILD-FAIL", r.stderr[-300:], 0
+        for d in glob.glob(f"{ROOT}/verif/directed/*.S"):                  # self-checking directed tests (DUT only)
+            ok, why = run_directed(sim, d, work)
+            if not ok: return name, "KILLED", f"directed {os.path.basename(d)}: {why}", 0
         for i, e in enumerate(corp):
             c = subprocess.run([sys.executable, f"{ROOT}/verif/cosim/cosim.py", sim, e], capture_output=True, text=True)
             if c.returncode != 0:

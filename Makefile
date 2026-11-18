@@ -73,3 +73,11 @@ cosim-random: sim sim-lat
 	for p in mix mem amo; do verif/cosim/run_random.sh build/sim_lat/Vtb_top 3000 $(SEEDS) $(N) $$p || exit 1; done
 mutate:
 	python3 verif/mutate/mutate.py
+
+.PHONY: directed cov
+directed: sim sim-lat
+	verif/directed/run_directed.sh build/sim/Vtb_top
+	verif/directed/run_directed.sh build/sim_lat/Vtb_top
+cov: sim
+	python3 verif/cov/coverage.py build/sim/Vtb_top
+	verif/cov/rtl_coverage.sh

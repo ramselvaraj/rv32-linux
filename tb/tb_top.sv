@@ -29,7 +29,7 @@ module tb_top;
   logic [31:0] ram_req_addr, ram_req_wdata, ram_rsp_data;
   logic [3:0]  ram_req_wstrb;
 
-  logic        mtip, msip;
+  logic        mtip, msip, ext_meip, ext_seip;
   logic [63:0] mtime;
 
   logic        tr_valid;
@@ -41,7 +41,7 @@ module tb_top;
     .ib_req_valid, .ib_req_addr, .ib_req_ready, .ib_rsp_valid, .ib_rsp_data, .ib_rsp_err,
     .db_req_valid, .db_req_we, .db_req_addr, .db_req_wdata, .db_req_wstrb,
     .db_req_ready, .db_rsp_valid, .db_rsp_data, .db_rsp_err,
-    .irq_mtip(mtip), .irq_msip(msip), .irq_meip(1'b0), .irq_seip(1'b0), .time_i(mtime),
+    .irq_mtip(mtip), .irq_msip(msip), .irq_meip(ext_meip), .irq_seip(ext_seip), .time_i(mtime),
     .trace_valid(tr_valid), .trace_pc(tr_pc), .trace_insn(tr_insn),
     .trace_rd(tr_rd), .trace_rd_data(tr_rd_data), .dbg(), .dbg_mcause(), .dbg_mepc(), .dbg_mtval()
   );
@@ -53,7 +53,7 @@ module tb_top;
     .req_ready(db_req_ready), .rsp_valid(db_rsp_valid), .rsp_data(db_rsp_data), .rsp_err(db_rsp_err),
     .ram_req_valid, .ram_req_we, .ram_req_addr, .ram_req_wdata, .ram_req_wstrb,
     .ram_req_ready, .ram_rsp_valid, .ram_rsp_data, .ram_rsp_err,
-    .mtip, .msip, .mtime
+    .mtip, .ext_meip, .ext_seip, .msip, .mtime
   );
 
   sim_ram #(.WORDS(RAM_WORDS), .BASE(RAM_BASE), .MAX_EXTRA(`MAX_EXTRA)) u_ram (

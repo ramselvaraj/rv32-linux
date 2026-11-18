@@ -28,6 +28,8 @@ module sim_periph #(
   input  logic        ram_rsp_err,
 
   output logic        mtip,
+  output logic        ext_meip,   // TB-only test register at CLINT+0xF000: bit0 = MEIP, bit1 = SEIP
+  output logic        ext_seip,
   output logic        msip,
   output logic [63:0] mtime
 );
@@ -54,6 +56,9 @@ module sim_periph #(
   // ---- CLINT
   logic [63:0] mtimecmp_q;
   logic        msip_q;
+  logic meip_q, seip_q;
+  assign ext_meip = meip_q;
+  assign ext_seip = seip_q;
   assign mtip  = (mtime >= mtimecmp_q);
   assign msip  = msip_q;
 
@@ -87,7 +92,7 @@ module sim_periph #(
   always_ff @(posedge clk) begin
     if (rst) begin
       pend_q <= 1'b0; per_valid_q <= 1'b0; per_err_q <= 1'b0;
-      mtime <= 64'd0; mtimecmp_q <= 64'hFFFF_FFFF_FFFF_FFFF; msip_q <= 1'b0;
+      mtime <= 64'd0; mtimecmp_q <= 64'hFFFF_FFFF_FFFF_FFFF; msip_q <= 1'b0; meip_q <= 1'b0; seip_q <= 1'b0;
       uart_ier_q <= 8'd0; uart_lcr_q <= 8'd0; uart_mcr_q <= 8'd0; uart_scr_q <= 8'd0;
     end else begin
       mtime       <= mtime + 64'd1;
@@ -99,7 +104,7 @@ module sim_periph #(
         tgt_ram_q <= sel_ram;
         if (!sel_ram) begin
           per_valid_q <= 1'b1;
-          per_err_q   <= !(sel_clint || sel_uart);
+          per_err_q   <= !(sel_clint || sel_uart) || (sel_clint && req_we && req_addr[15:0] == 16'hF004);   // TB-only: CLINT+0xF004 reads fine but every write errors
           per_data_q  <= 32'd0;
           if (sel_clint) begin
             per_data_q <= clint_rd;
@@ -114,6 +119,7 @@ module sim_periph #(
                                       if (req_wstrb[i]) mtime[8*i +: 8] <= req_wdata[8*i +: 8];
                 14'(16'hBFFC >> 2): for (int i = 0; i < 4; i++)
                                       if (req_wstrb[i]) mtime[32 + 8*i +: 8] <= req_wdata[8*i +: 8];
+                14'(16'hF000 >> 2): if (req_wstrb[0]) begin meip_q <= req_wdata[0]; seip_q <= req_wdata[1]; end
                 default: ;
               endcase
             end

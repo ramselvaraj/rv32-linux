@@ -38,6 +38,10 @@ STATUS_MASK = ~0x8001E600 & 0xFFFFFFFF
 def is_id_read(insn):
     return insn & 0x7f == 0x73 and (insn >> 12) & 7 != 0 and (insn >> 20) in (0xF11, 0xF12, 0xF13)
 
+def is_counteren_read(insn):
+    # mcounteren/scounteren: WARL width is implementation-defined (hpm enable bits); compare CY/TM/IR only
+    return insn & 0x7f == 0x73 and (insn >> 12) & 7 != 0 and (insn >> 20) in (0x306, 0x106)
+
 def is_tval_read(insn):
     return insn & 0x7f == 0x73 and (insn >> 12) & 7 != 0 and (insn >> 20) in (0x343, 0x143)
 
@@ -46,7 +50,7 @@ def is_status_read(insn):
 
 def spike_trace(elf, path, tohost):
     try:
-        subprocess.run([SPIKE, f"--isa={ISA}", f"-m0x80000000:0x4000000", "--log-commits",
+        subprocess.run([SPIKE, f"--isa={ISA}", f"-m0x80000000:0x4000000", "--wfi-as-nop", "--log-commits",
                         f"--log={path}", elf], check=False, timeout=30,
                        preexec_fn=lambda: resource.setrlimit(resource.RLIMIT_FSIZE, (SPIKE_LOG_LIMIT, SPIKE_LOG_LIMIT)),
                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -97,6 +101,7 @@ def compare(dut, spk):
         # surface in a plain load; tolerate differences confined to exactly those two fields
         elif (dv ^ sv) & 0xFFFFFFFF and ((dv ^ sv) & ~0x80006000) == 0 and not is_counter_read(d[1]): sv = dv
         if is_id_read(d[1]): sv = dv
+        if is_counteren_read(d[1]): dv &= 7; sv &= 7
         # illegal-instruction tval for a word whose low 2 bits != 11: Spike reports the 16-bit parcel, this
         # core (no C extension) the full 32-bit word; both are allowed by the privileged spec
         if is_tval_read(d[1]) and (dv & 3) != 3 and sv == (dv & 0xFFFF): sv = dv

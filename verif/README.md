@@ -45,37 +45,63 @@ store-to-load forwarding. Profiles:
 | `trap` | An M-mode handler that reads `mcause`/`mtval`/`mstatus`/`mepc` (all compared lock-step) and skips the instruction. Traps: ecall (U/S/M), ebreak, illegal words, illegal/ro-CSR access, `mret`/`sret` below M, misaligned load/store/AMO/jump, load/store/AMO/instruction access faults. Random U/S privilege blocks via `mret` and back via an exit `ecall` |
 | `mmu` | Everything in `trap` plus Sv32: a root table with a 4 KiB-page window (16 pages), an aligned 4 MiB leaf and a misaligned 4 MiB leaf; random V/R/W/X/U/A/D per PTE (including reserved W-without-R); random `mstatus.SUM`/`MXR`; PTEs rewritten and `sfence.vma` between blocks; loads/stores/AMOs and instruction fetches (`jalr` into virtual pages whose 16-byte groups start with `ret`) in S/U mode |
 
+## Directed tests (`directed/`, `make directed`)
+
+Self-checking, DUT-only (Spike's CLINT timing and flat memory cannot model these). `tohost = 1` on success,
+`(test << 1) | 1` on failure. Uses TB-only registers in `tb/sim_periph.sv`: CLINT+0xF000 drives MEIP/SEIP,
+CLINT+0xF004 reads fine but every write returns a bus error.
+
+* `irq.S`: MSI, MTI, MEI, SEI; priority MEI > MSI > MTI > SEI with all pending; `mstatus.MIE` masking; `mie`
+  masking; SSI/STI via `mip`; SEI delegated through `mideleg` and taken in S-mode; vectored `mtvec`.
+* `amo_write_error.S`: AMO whose read phase succeeds and whose write phase gets a bus error -> cause 7, mtval = address.
+
+## Findings (`findings/`)
+
+Two divergences from Spike were judged to be real core behaviour and are documented with reproducers instead of
+being hidden: **F1** (access fault raised before the permission check for a PTE with a >32-bit PA; spec deviation,
+low impact) and **F2** (a failing `sc.w` to an unmapped address does not fault; spec-ambiguous). No RTL was changed.
+
 ## Results (core @ HEAD)
 
 | Run | Result |
 |---|---|
 | riscv-tests ISA, zero / random latency | 139 / 139 identical to Spike, both builds |
-| `mix` `hazard` `mem` `muldiv` `amo` (750 progs, 800 instr) + 300 random-latency | all identical |
-| `trap` (700 programs, both latency builds) | all identical; causes 0,2,3,4,5,6,7,8,9,11 all taken |
-| `mmu` (550+ programs, both latency builds) | all identical; ~30% of virtual accesses fault (causes 12, 13, 15) |
-| Mutation testing | see below |
+| `mix` `hazard` `mem` `muldiv` `amo` (750 progs, 800 instr) | all identical |
+| `trap` (400 programs zero latency + 200 random latency) | all identical; every legal cause x privilege bin taken |
+| `mmu` (400 + 150, both builds) | all identical; ~30% of virtual accesses fault (12, 13, 15); PTW bus-error and high-PPN windows covered |
+| Directed (`irq`, `amo_write_error`), both builds | pass |
+
+## Coverage (`cov/`, `make cov`)
+
+* **Functional (retire-trace)**: 70/70 mnemonics (ecall/ebreak counted through their trap causes), 48/48 hazard bins
+  (producer class x distance x operand), 33/33 legal trap-cause x privilege bins, 35 CSR addresses.
+* **RTL (Verilator line + toggle)**: 84% of 1,181 coverage points over 1,690 programs. Every uncovered *line* is an
+  unreachable FSM `default:` (3 places); the remainder is toggle coverage (high address/data bits that a 64 MiB
+  testbench RAM never exercises).
 
 ## Mutation testing (`mutate/mutate.py`)
 
-Each mutant is a one-line (or two-place) RTL bug; the core is rebuilt and the whole corpus is run against Spike.
-A mutant is killed if any program diverges. The harness first checks that the **unmodified** core passes the corpus
-(otherwise kills mean nothing) and excludes tests the core does not support by design (`rv32mi-p-breakpoint`, `ma_data`).
+Each mutant is a one-line (or two-place) RTL bug; the core is rebuilt, the directed tests and the whole corpus run
+against it, and it is killed if anything diverges from Spike or a directed test fails. The harness first checks that
+the **unmodified** core passes everything (otherwise kills mean nothing) and excludes tests the core does not
+support by design (`rv32mi-p-breakpoint`, `ma_data`).
+
+**61 mutants, 56 killed, 5 survivors, all explained: no non-equivalent mutant survives.**
 
 Classes covered: ALU, forwarding, load-use/AMO/CSR hazards, branches, `jalr`, divide/remainder, multiplier
 signedness, register-file bypass, SC reservation, trap cause/tval/mepc/mstatus updates, privilege checks on CSRs and
 xRET, PTE permission logic (U/SUM/MXR/A/D), page-table walker (reserved W-without-R, misaligned superpage), TLB
-(superpage offset, tag aliasing), `sfence.vma`.
-
-Survivors, all explained:
+(superpage offset, tag aliasing), `sfence.vma`, interrupt priority/enable/delegation/masking/vectoring, AMO write-phase fault.
 
 | Survivor | Why it survives |
 |---|---|
 | `md_div_neg_zero` | Equivalent: `neg_q` is dead when `by_zero` (it overrides the quotient) |
-| `ptw_a_bit_ignored`, `pte_a_ignored_perm`, `ptw_d_bit_ignored` | The A/D check is duplicated (walker and `pte_ok`); each alone is redundant. Removing both is killed (`ad_*_unchecked_everywhere`) |
-| `trap_amo_fault_cause` | Needs a bus error on the *write* phase of an AMO after a successful read; Spike's flat memory cannot provoke it. Needs an error-injecting bus model |
-| `pte_sum_allows_exec` | See Gaps (rare S-mode fetch from a U page with SUM=1) |
+| `pte_sum_allows_exec` | Equivalent: instruction fetch calls `pte_ok(..., sum=0, ...)` and data accesses never have `acc == ACC_X` |
+| `ptw_a_bit_ignored`, `pte_a_ignored_perm`, `ptw_d_bit_ignored` | The A/D check exists in both the walker and `pte_ok`; removing one copy is invisible. Removing both is killed (`ad_*_unchecked_everywhere`) |
 
 ## Gaps
 
-No functional coverage model yet (next). Interrupts are not randomized. The two memory models in the testbench have
-zero or 0-3 cycle random latency only.
+* Interrupts are not part of the *random* lock-step programs (timing differs from Spike); they are covered by the
+  directed tests only.
+* The two memory models in the testbench have zero or 0-3 cycle random latency only.
+* Toggle coverage is incomplete by construction (see above).
